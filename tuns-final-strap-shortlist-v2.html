@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TUNS Final Strap Shortlist</title>
+  <title>TUNS Final Strap Shortlist · Version 2</title>
   <style>
     :root {
       --bg: #f4f1ea;
@@ -144,40 +144,34 @@
       display: inline-flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 20px;
-      padding: 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.62);
-      border: 1px solid rgba(49, 44, 38, 0.10);
-      backdrop-filter: blur(10px);
+      margin-top: 18px;
     }
 
     .version-link {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 40px;
-      padding: 10px 16px;
+      padding: 10px 14px;
       border-radius: 999px;
+      border: 1px solid rgba(49, 44, 38, 0.12);
+      background: rgba(255,255,255,0.58);
       font-family: "Avenir Next", "Segoe UI", sans-serif;
-      font-size: 0.88rem;
-      letter-spacing: 0.04em;
-      border: 1px solid rgba(49, 44, 38, 0.10);
-      background: rgba(255,255,255,0.78);
-      color: var(--ink);
-      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
     }
 
     .version-link:hover {
-      background: white;
-      border-color: rgba(45, 62, 83, 0.24);
-      transform: translateY(-1px);
+      background: rgba(255,255,255,0.82);
+      border-color: rgba(49, 44, 38, 0.2);
+      color: var(--ink);
     }
 
     .version-link.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
+      background: rgba(45, 62, 83, 0.10);
+      border-color: rgba(45, 62, 83, 0.18);
+      color: var(--accent);
     }
 
     .brief-panel {
@@ -1137,7 +1131,7 @@
     }
   </style>
 </head>
-<body>
+  <body>
   <div class="page-shell">
     <section class="brief-panel" id="wardrobe-brief" aria-labelledby="wardrobe-brief-title">
       <div class="brief-head">
@@ -1158,32 +1152,32 @@
     </section>
 
     <header class="hero">
-      <div class="eyebrow">Quiet Luxury Strap Deck · Version 1</div>
+      <div class="eyebrow">Quiet Luxury Strap Deck · Version 2</div>
       <h1>TUNS Final Strap Shortlist</h1>
       <p class="hero-copy">
-        A cleaner visual presentation of the final ranking: ten curated strap directions, each expanded into a ten-step buy ladder. The goal is restrained, textural, age-appropriate elegance for stainless steel watches, silver jewelry, and a wardrobe built around black, white, cream, navy, blue, and brown.
+        Version 2 re-ranks the same catalog through a stricter wardrobe lens: timeless first, modern second. Dark brown, black, and navy become the backbone; taupe, graphite, and muted blue stay in the mix, but now as supporting texture rather than the center of gravity.
       </p>
       <div class="hero-meta">
         <div class="meta-card">
           <div class="meta-label">Core Aesthetic</div>
-          <div class="meta-value">Quiet luxury, classic menswear, modern edge</div>
+          <div class="meta-value">Timeless menswear, quiet luxury, restrained masculinity</div>
         </div>
         <div class="meta-card">
           <div class="meta-label">Best Material Bias</div>
-          <div class="meta-value">Suede, nubuck, fine-grain calf, matte leather</div>
+          <div class="meta-value">Nubuck, box calf, fine-grain calf, matte leather</div>
         </div>
         <div class="meta-card">
           <div class="meta-label">Primary Warning</div>
-          <div class="meta-value">Do not let exotics become the daily signature</div>
+          <div class="meta-value">Do not let fashion-neutrals outrank the long-term backbone</div>
         </div>
         <div class="meta-card">
           <div class="meta-label">Strongest First Cart</div>
-          <div class="meta-value">Etaupe, dark brown nubuck, graphite, navy, black</div>
+          <div class="meta-value">Dark brown nubuck, black, polished brown, navy, etaupe</div>
         </div>
       </div>
       <div class="version-switcher" aria-label="Version switcher">
-        <a class="version-link active" href="index.html">Method 1 · Original</a>
-        <a class="version-link" href="tuns-final-strap-shortlist-v2.html">Method 2 · Timeless-First</a>
+        <a class="version-link" href="index.html">Method 1 · Original</a>
+        <a class="version-link active" href="tuns-final-strap-shortlist-v2.html">Method 2 · Timeless-First</a>
       </div>
     </header>
 
@@ -1198,7 +1192,7 @@
         <section class="panel">
           <h2>At A Glance</h2>
           <p class="subcopy">
-            The first five directions are the real foundation. The remaining five give you supporting depth, situational options, and a controlled dress lane without letting the collection drift into loud or over-styled territory.
+            This method is intentionally stricter. It rewards the straps that will still feel correct in ten or twenty years and demotes the options that are more fashion-literate, moodier, or more stylistically specific.
           </p>
           <div class="summary-grid" id="summary-grid"></div>
         </section>
@@ -1206,7 +1200,7 @@
         <section class="panel">
           <h2>Strongest First Order</h2>
           <p class="subcopy">
-            If this were my first cart from TUNS for your exact goal, I would still start with these five. They give you the most attractive mix of warmth, restraint, modernity, and repeat wear.
+            If I were buying from this stricter wardrobe brief, I would start with the five below. They form the cleanest long-term backbone and make the rest of the strap collection feel supporting rather than scattered.
           </p>
           <div class="summary-grid" id="first-order-grid"></div>
         </section>
@@ -1230,7 +1224,7 @@
         <section class="panel">
           <h2>Final Note</h2>
           <p class="footer-note">
-            The most compelling version of this wardrobe is not the one with the most “special” straps. It is the one where texture, tone, and repetition make every choice feel inevitable. Keep the center of gravity matte, soft, and controlled. Let the watch do the talking, and let the strap prove you know exactly what you are doing.
+            Version 2 is the more conservative and more durable edit. It keeps the center of gravity in dark brown, black, navy, and tailored neutrals so the collection reads coherent over decades, not just in the current moment. Use taupe, graphite, and muted blue as intelligent accents, not as the entire identity.
           </p>
         </section>
       </main>
@@ -1680,12 +1674,204 @@
       return "Specialist fallback: use only if you accept a more dressy, watch-specific, or maturity-skewing compromise.";
     }
 
+    const sectionById = Object.fromEntries(
+      sections.map((section) => [
+        section.id,
+        { ...section, items: section.items.map((item) => ({ ...item })) }
+      ])
+    );
+
+    function reorderItems(sectionId, preferredTitles) {
+      const section = sectionById[sectionId];
+      if (!section) return;
+      const preferredSet = new Set(preferredTitles);
+      const preferred = preferredTitles
+        .map((title) => section.items.find((item) => item.title === title))
+        .filter(Boolean);
+      const remainder = section.items.filter((item) => !preferredSet.has(item.title));
+      section.items = [...preferred, ...remainder].map((item, index) => ({ ...item, rank: index + 1 }));
+    }
+
+    function overrideItem(sectionId, title, fields) {
+      const section = sectionById[sectionId];
+      if (!section) return;
+      const item = section.items.find((entry) => entry.title === title);
+      if (item) Object.assign(item, fields);
+    }
+
+    Object.assign(sectionById["deep-dark-brown-nubuck"], {
+      summary: "The strongest timeless backbone in the entire catalog.",
+      intro: "Under a stricter timelessness brief, this becomes the best first move. It is tactile and attractive, but still classic enough to hold up over decades. With steel, navy, cream, black, and brown, this family keeps giving without ever reading trend-driven.",
+    });
+
+    Object.assign(sectionById["black-formal-minimal"], {
+      summary: "Necessary black, done cleanly and without corporate stiffness.",
+      intro: "Every timeless wardrobe needs a clean black lane. In this method, it rises because it gives the collection a formal anchor without pushing you into glossy boardroom energy. The right black strap should feel sleek, calm, and inevitable.",
+    });
+
+    Object.assign(sectionById["dark-brown-polished-minimal"], {
+      summary: "The tailored brown lane that keeps the collection classic.",
+      intro: "This is the refined counterpart to dark-brown nubuck. It gives you the same long-term utility, but with a smoother and more dress-aware surface. Version 2 pushes it up because timeless wardrobes need at least one polished brown lane, not just soft texture.",
+    });
+
+    Object.assign(sectionById["ink-navy-refined-texture"], {
+      summary: "Navy treated as a core neutral, not a decorative accent.",
+      intro: "Version 2 promotes navy because a deep, quiet blue is one of the safest ways to keep a steel watch feeling elegant and current without chasing novelty. The best navy here should feel nearly black indoors and refined rather than expressive.",
+    });
+
+    Object.assign(sectionById["soft-etaupe-everyday-neutral"], {
+      summary: "Still excellent, but now a supporting neutral rather than the backbone.",
+      intro: "This is still one of the most tasteful directions in the catalog, but Version 2 moves it down because it is more taste-driven than foundational. Think of it as the smart soft neutral that rounds out the collection after the brown, black, and navy lanes are established first.",
+    });
+
+    Object.assign(sectionById["graphite-suede-soft-grey-matte"], {
+      summary: "A strong cool neutral, but less central than brown, black, or navy.",
+      intro: "Grey still works extremely well with steel and silver, but this method demotes it slightly because it is less essential to timeless menswear than brown, black, and navy. Keep it as a cool supporting mood, not as the whole backbone.",
+    });
+
+    Object.assign(sectionById["soft-black-matte-casual"], {
+      summary: "Useful secondary black, but not the main black lane.",
+      intro: "This is the relaxed black slot for more casual watches. It stays in the mix because texture matters, but it sits below the formal black family once timelessness becomes the priority.",
+    });
+
+    Object.assign(sectionById["muted-blue-accent"], {
+      summary: "Controlled personality, but clearly not a foundation lane.",
+      intro: "This family still works when you want a little more visual interest, but Version 2 treats it as seasoning rather than structure. Buy it once the core dark brown, black, navy, and tailored neutral lanes are already covered.",
+    });
+
+    Object.assign(sectionById["slate-grey-structured-leather"], {
+      summary: "Elegant and architectural, but more specific than the softer core neutrals.",
+      intro: "Structured grey remains useful for cool, modern watches, but it now sits low because it can tilt corporate or overly designed if it becomes too central. Think of it as a specialist supporting lane.",
+    });
+
+    Object.assign(sectionById["one-controlled-matte-exotic"], {
+      summary: "Strictly optional in the timeless-first method.",
+      intro: "This stays last on purpose. The only case for buying exotic here is to give a true dress watch one reserved specialist strap. It should never outrank the soft, matte, and long-horizon leather lanes above it.",
+    });
+
+    reorderItems("soft-etaupe-everyday-neutral", [
+      "butero etaupe leather watch strap",
+      "Suede Etaupe Leather watch strap",
+      "Omega box calf etaupe Leather watch strap",
+      "Nubuck begie watch strap",
+      "Cartier togo etaupe leather watch strap"
+    ]);
+
+    reorderItems("graphite-suede-soft-grey-matte", [
+      "Nubuck Grey watch strap",
+      "Suede dark grey Leather watch strap",
+      "Suede Gray Leather watch strap"
+    ]);
+
+    reorderItems("ink-navy-refined-texture", [
+      "Alran suly navy watch strap",
+      "butero navy leather watch strap",
+      "Babele navy blue watch strap",
+      "Pueblo dark navy leather watch strap",
+      "Suede navy blue Leather watch strap",
+      "Alaska navy leather watch strap"
+    ]);
+
+    reorderItems("dark-brown-polished-minimal", [
+      "Alran suly dark brown watch strap",
+      "butero dark brown leather watch strap",
+      "Omega box calf dark brown Leather watch strap",
+      "Babele brown watch strap"
+    ]);
+
+    reorderItems("soft-black-matte-casual", [
+      "Suede Black Leather watch strap",
+      "Nubuck smooth black watch strap",
+      "Babele black watch strap"
+    ]);
+
+    reorderItems("slate-grey-structured-leather", [
+      "Swift gray Leather watch strap",
+      "epsom grey leather watch strap",
+      "epsom dark grey leather watch strap",
+      "Epi grayLeather watch strap",
+      "cartier Togo gray leather watch strap"
+    ]);
+
+    reorderItems("muted-blue-accent", [
+      "Suede dark blue Leather watch strap",
+      "Alaska blue leather watch strap",
+      "Suede navy blue Leather watch strap",
+      "butero navy leather watch strap",
+      "Natural grain veg dark blue leather watch strap"
+    ]);
+
+    overrideItem("soft-etaupe-everyday-neutral", "butero etaupe leather watch strap", {
+      note: "Version 2 puts this first because the cleaner structure reads more timeless than suede while keeping the same cool stone tone."
+    });
+    overrideItem("soft-etaupe-everyday-neutral", "Suede Etaupe Leather watch strap", {
+      note: "Still beautiful, but slightly more fashion-literate and less foundational than the firmer butero version."
+    });
+    overrideItem("soft-etaupe-everyday-neutral", "Omega box calf etaupe Leather watch strap", {
+      note: "Rises in this method because the sleeker tailored finish will age more easily than softer or watch-specific alternatives."
+    });
+
+    overrideItem("graphite-suede-soft-grey-matte", "Nubuck Grey watch strap", {
+      note: "Version 2 gives this the edge because the denser nubuck finish feels more timeless and less editorial than suede."
+    });
+    overrideItem("graphite-suede-soft-grey-matte", "Suede dark grey Leather watch strap", {
+      note: "Still excellent, but slightly moodier and more style-coded than the nubuck grey above it."
+    });
+
+    overrideItem("ink-navy-refined-texture", "butero navy leather watch strap", {
+      note: "Promoted in Version 2 because the smoother finish reads more enduring and less stylized than the more textured alternatives."
+    });
+
+    overrideItem("dark-brown-polished-minimal", "Omega box calf dark brown Leather watch strap", {
+      note: "Version 2 moves this up because the cleaner tailored surface is more timeless than more visibly textured brown options."
+    });
+
+    overrideItem("soft-black-matte-casual", "Suede Black Leather watch strap", {
+      note: "Version 2 puts this first because it feels more elegantly casual and less product-like than nubuck smooth black."
+    });
+    overrideItem("soft-black-matte-casual", "Nubuck smooth black watch strap", {
+      note: "Still very strong, but the suede above it feels slightly more timeless and wardrobe-integrated."
+    });
+
+    overrideItem("slate-grey-structured-leather", "Swift gray Leather watch strap", {
+      note: "Promoted because it softens the structured-grey idea and avoids tipping too far into corporate precision."
+    });
+    overrideItem("slate-grey-structured-leather", "epsom grey leather watch strap", {
+      note: "Still sharp and controlled, but more structured than the softer Swift grey above it."
+    });
+    overrideItem("slate-grey-structured-leather", "epsom dark grey leather watch strap", {
+      note: "Now third because the darker, harder structure can feel more severe and less versatile over time."
+    });
+
+    overrideItem("muted-blue-accent", "Suede dark blue Leather watch strap", {
+      note: "Keeps the lead because it is the best mix of depth, softness, and understated character."
+    });
+    overrideItem("muted-blue-accent", "Alaska blue leather watch strap", {
+      note: "Version 2 promotes this because the smoother, more restrained blue reads more enduring than a more obviously textural fallback."
+    });
+    overrideItem("muted-blue-accent", "Suede navy blue Leather watch strap", {
+      note: "Still excellent, just slightly more conventional and less interesting than the top two."
+    });
+
+    const orderedSections = [
+      "deep-dark-brown-nubuck",
+      "black-formal-minimal",
+      "dark-brown-polished-minimal",
+      "ink-navy-refined-texture",
+      "soft-etaupe-everyday-neutral",
+      "graphite-suede-soft-grey-matte",
+      "soft-black-matte-casual",
+      "muted-blue-accent",
+      "slate-grey-structured-leather",
+      "one-controlled-matte-exotic"
+    ].map((id, index) => ({ ...sectionById[id], rank: index + 1 }));
+
     const firstOrder = [
-      sections[0].items[0],
-      sections[1].items[0],
-      sections[2].items[0],
-      sections[3].items[0],
-      sections[4].items[0]
+      orderedSections[0].items[0],
+      orderedSections[1].items[0],
+      orderedSections[2].items[0],
+      orderedSections[3].items[0],
+      orderedSections[4].items[0]
     ];
 
     const navList = document.getElementById("nav-list");
@@ -1700,7 +1886,7 @@
     const favKey = (item) => item.url;
     const lightboxIndex = [];
 
-    sections.forEach((section) => {
+    orderedSections.forEach((section) => {
       navList.insertAdjacentHTML(
         "beforeend",
         `<a class="nav-link" href="#${section.id}" data-section="${section.id}"><strong>${section.rank}.</strong> ${section.title}</a>`
@@ -1807,7 +1993,7 @@
     });
 
     /* ---------- Brief Acknowledgment ---------- */
-    const BRIEF_KEY = "tuns-v1-brief-acknowledged";
+    const BRIEF_KEY = "tuns-v2-brief-acknowledged";
     const briefPanel = document.getElementById("wardrobe-brief");
     const briefStatus = document.getElementById("brief-status");
     const briefCheckbox = document.getElementById("brief-read-checkbox");
@@ -1819,7 +2005,11 @@
       briefCheckbox.checked = acknowledged;
       briefButton.disabled = !briefCheckbox.checked || acknowledged;
       briefStatus.textContent = acknowledged ? "Brief acknowledged" : "Acknowledgment required";
-      briefButton.textContent = acknowledged ? "Acknowledged" : "Acknowledge Brief";
+      if (acknowledged) {
+        briefButton.textContent = "Acknowledged";
+      } else {
+        briefButton.textContent = "Acknowledge Brief";
+      }
     }
 
     briefCheckbox.addEventListener("change", () => {
@@ -1834,7 +2024,7 @@
     });
 
     /* ---------- Shortlist / Favorites ---------- */
-    const STORAGE_KEY = "tuns-shortlist-v1";
+    const STORAGE_KEY = "tuns-shortlist-v2";
     const shortlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
 
     function persistShortlist() {
