@@ -1,5 +1,5 @@
 (function () {
-  const method = window.location.pathname.includes("method-2") ? "v2" : "v1";
+  const method = "v1";
   const responseKey = `tuns-responses-${method}`;
   const responseTimers = new Map();
 

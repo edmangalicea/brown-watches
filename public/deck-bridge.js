@@ -1,17 +1,10 @@
 (function () {
-  const method = window.location.pathname.includes("method-2") ? "v2" : "v1";
+  const method = "v1";
   const keys = {
-    v1: {
-      shortlist: "tuns-shortlist-v1",
-      brief: "tuns-v1-brief-acknowledged",
-      responses: "tuns-responses-v1"
-    },
-    v2: {
-      shortlist: "tuns-shortlist-v2",
-      brief: "tuns-v2-brief-acknowledged",
-      responses: "tuns-responses-v2"
-    }
-  }[method];
+    shortlist: "tuns-shortlist-v1",
+    brief: "tuns-v1-brief-acknowledged",
+    responses: "tuns-responses-v1"
+  };
 
   function parseInitialState() {
     try {

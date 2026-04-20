@@ -12,7 +12,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-type DeckMethod = "v1" | "v2";
+type DeckMethod = "v1";
 type StrapOpinion = "like" | "dislike";
 
 type DeckShellProps = {

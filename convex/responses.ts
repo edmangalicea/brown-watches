@@ -13,7 +13,7 @@ function adminEmail() {
   );
 }
 
-const methodArg = v.union(v.literal("v1"), v.literal("v2"));
+const methodArg = v.literal("v1");
 const responseArg = v.union(v.literal("like"), v.literal("dislike"));
 
 const responseItemArg = v.object({
