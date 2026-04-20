@@ -74,20 +74,6 @@ export function DeckShell({
             <p>{description}</p>
           </div>
           <div className="app-actions">
-            <nav className="method-switch" aria-label="Method switcher">
-              <Link
-                className={`method-link${method === "v1" ? " active" : ""}`}
-                href="/method-1"
-              >
-                Method 1
-              </Link>
-              <Link
-                className={`method-link${method === "v2" ? " active" : ""}`}
-                href="/method-2"
-              >
-                Method 2
-              </Link>
-            </nav>
             <span className="sync-chip">Auth/env setup pending</span>
           </div>
         </header>
@@ -250,20 +236,6 @@ function AuthenticatedDeckShell({
           <p>{description}</p>
         </div>
         <div className="app-actions">
-          <nav className="method-switch" aria-label="Method switcher">
-            <Link
-              className={`method-link${method === "v1" ? " active" : ""}`}
-              href="/method-1"
-            >
-              Method 1
-            </Link>
-            <Link
-              className={`method-link${method === "v2" ? " active" : ""}`}
-              href="/method-2"
-            >
-              Method 2
-            </Link>
-          </nav>
           <span className="sync-chip">{syncLabel}</span>
           {isAdmin ? (
             <Link className="auth-chip" href="/admin">

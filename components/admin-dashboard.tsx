@@ -6,8 +6,6 @@ import { useMemo, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-type DeckMethod = "v1" | "v2";
-
 const SELF_FILTER = "__self__";
 
 function normalizeEmail(email: string | undefined) {
@@ -49,10 +47,10 @@ export function AdminDashboard() {
 
 function ConfiguredAdminDashboard() {
   const { user, isLoaded } = useUser();
-  const [method, setMethod] = useState<DeckMethod>("v1");
   const [search, setSearch] = useState("");
   const [respondentFilter, setRespondentFilter] = useState("");
   const [selectedStrapId, setSelectedStrapId] = useState("");
+  const method = "v1" as const;
 
   const userEmail = normalizeEmail(user?.primaryEmailAddress?.emailAddress);
   const isAdmin = userEmail === ADMIN_EMAIL;
@@ -146,9 +144,6 @@ function ConfiguredAdminDashboard() {
             <Link className="method-link" href="/method-1">
               Method 1
             </Link>
-            <Link className="method-link" href="/method-2">
-              Method 2
-            </Link>
             <span className="method-link active">Admin</span>
           </nav>
           <SignedOut>
@@ -168,29 +163,6 @@ function ConfiguredAdminDashboard() {
 
       <section className="admin-card admin-controls">
         <div className="admin-toolbar">
-          <div className="method-switch" aria-label="Method selector">
-            <button
-              className={`method-link${method === "v1" ? " active" : ""}`}
-              onClick={() => {
-                setMethod("v1");
-                setSelectedStrapId("");
-              }}
-              type="button"
-            >
-              Method 1
-            </button>
-            <button
-              className={`method-link${method === "v2" ? " active" : ""}`}
-              onClick={() => {
-                setMethod("v2");
-                setSelectedStrapId("");
-              }}
-              type="button"
-            >
-              Method 2
-            </button>
-          </div>
-
           <div className="admin-filter">
             <label htmlFor="admin-search">Search</label>
             <input
