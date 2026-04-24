@@ -5,6 +5,16 @@
     brief: "tuns-v1-brief-acknowledged",
     responses: "tuns-responses-v1"
   };
+  let suppressNotifyCount = 0;
+
+  function withSuppressedNotify(applyState) {
+    suppressNotifyCount += 1;
+    try {
+      applyState();
+    } finally {
+      suppressNotifyCount -= 1;
+    }
+  }
 
   function parseInitialState() {
     try {
@@ -50,18 +60,20 @@
             responses: []
           };
 
-    window.__deckBridgeState = normalizedState;
-    window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
+    withSuppressedNotify(() => {
+      window.__deckBridgeState = normalizedState;
+      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
 
-    localStorage.setItem(keys.shortlist, JSON.stringify(normalizedState.shortlist ?? []));
-    localStorage.setItem(
-      keys.brief,
-      normalizedState.briefAcknowledged ? "true" : "false"
-    );
-    localStorage.setItem(
-      keys.responses,
-      JSON.stringify(toResponseMap(normalizedState.responses))
-    );
+      localStorage.setItem(keys.shortlist, JSON.stringify(normalizedState.shortlist ?? []));
+      localStorage.setItem(
+        keys.brief,
+        normalizedState.briefAcknowledged ? "true" : "false"
+      );
+      localStorage.setItem(
+        keys.responses,
+        JSON.stringify(toResponseMap(normalizedState.responses))
+      );
+    });
   }
 
   function applyHydratedState(nextState) {
@@ -104,12 +116,14 @@
       responses: Object.values(responses)
     };
 
-    window.__deckBridgeState = normalizedState;
-    window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
+    withSuppressedNotify(() => {
+      window.__deckBridgeState = normalizedState;
+      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
 
-    localStorage.setItem(keys.shortlist, JSON.stringify(shortlist));
-    localStorage.setItem(keys.brief, briefAcknowledged ? "true" : "false");
-    localStorage.setItem(keys.responses, JSON.stringify(responses));
+      localStorage.setItem(keys.shortlist, JSON.stringify(shortlist));
+      localStorage.setItem(keys.brief, briefAcknowledged ? "true" : "false");
+      localStorage.setItem(keys.responses, JSON.stringify(responses));
+    });
   }
 
   function readState() {
@@ -132,7 +146,7 @@
   }
 
   function notifyParent() {
-    if (window.parent === window) {
+    if (suppressNotifyCount > 0 || window.parent === window) {
       return;
     }
 

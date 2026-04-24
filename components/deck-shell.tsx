@@ -122,12 +122,13 @@ function AuthenticatedDeckShell({
 
   const userEmail = normalizeEmail(user?.primaryEmailAddress?.emailAddress);
   const hasSignedInUser = Boolean(userEmail);
+  const canSyncFeedback = hasSignedInUser && isAuthenticated;
   const isAdmin = userEmail === ADMIN_EMAIL;
 
   const iframeState = useMemo<DeckHydrateMessage>(() => ({
     type: "deck:hydrate",
     method,
-    isAuthenticated: hasSignedInUser,
+    isAuthenticated: canSyncFeedback,
     shortlist: prefs?.shortlist ?? [],
     briefAcknowledged: prefs?.briefAcknowledged ?? false,
     responses:
@@ -138,7 +139,7 @@ function AuthenticatedDeckShell({
         comment: item.comment ?? ""
       })) ?? []
   }), [
-    hasSignedInUser,
+    canSyncFeedback,
     method,
     prefs?.briefAcknowledged,
     prefs?.shortlist,
@@ -146,7 +147,7 @@ function AuthenticatedDeckShell({
   ]);
 
   const iframeName = JSON.stringify(iframeState);
-  const iframeKey = `${method}:${hasSignedInUser ? userEmail : "guest"}`;
+  const iframeKey = `${method}:${canSyncFeedback ? userEmail : "guest"}`;
 
   useEffect(() => {
     const win = iframeRef.current?.contentWindow;
