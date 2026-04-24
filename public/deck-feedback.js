@@ -1,7 +1,6 @@
 (function () {
   const method = "v1";
   const responseKey = `tuns-responses-${method}`;
-  const responseTimers = new Map();
 
   function isSignedIn() {
     return Boolean(window.__deckBridgeState?.isAuthenticated);
@@ -158,21 +157,6 @@
     writeResponseMap(map);
   }
 
-  function scheduleCommentSave(strapId, strapTitle, response, comment) {
-    const existingTimer = responseTimers.get(strapId);
-    if (existingTimer) {
-      clearTimeout(existingTimer);
-    }
-
-    const timer = window.setTimeout(() => {
-      upsertResponse(strapId, strapTitle, { response, comment });
-      responseTimers.delete(strapId);
-      syncAllPanels();
-    }, 450);
-
-    responseTimers.set(strapId, timer);
-  }
-
   function signedOutNote() {
     return `Sign in to save an opinion and comment. <a href="/sign-in" target="_top" rel="noreferrer">Open sign in</a>`;
   }
@@ -254,12 +238,22 @@
       if (!signedIn || !current?.response) {
         return;
       }
-      scheduleCommentSave(
-        strapId,
-        strapTitle,
-        current.response,
-        event.target.value
-      );
+      upsertResponse(strapId, strapTitle, {
+        response: current.response,
+        comment: event.target.value
+      });
+      status.textContent = "Saving comment…";
+    };
+
+    textarea.onblur = () => {
+      const current = getResponse(strapId);
+      if (!signedIn || !current?.response) {
+        return;
+      }
+      upsertResponse(strapId, strapTitle, {
+        response: current.response,
+        comment: textarea.value
+      });
       status.textContent = "Saving comment…";
     };
   }

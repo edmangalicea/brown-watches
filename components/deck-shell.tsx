@@ -113,7 +113,11 @@ function AuthenticatedDeckShell({
   const savePreferences = useMutation(api.preferences.saveForCurrentUser);
   const saveResponses = useMutation(api.responses.upsertManyForCurrentUser);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
-  const latestPayloadRef = useRef<string>("");
+  const queuedPayloadRef = useRef<string>("");
+  const savedPayloadRef = useRef<string>("");
+  const pendingStateRef = useRef<DeckStateMessage | null>(null);
+  const flushTimerRef = useRef<number | null>(null);
+  const saveInFlightRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const userEmail = normalizeEmail(user?.primaryEmailAddress?.emailAddress);
@@ -164,9 +168,80 @@ function AuthenticatedDeckShell({
 
   useEffect(() => {
     if (!isAuthenticated) {
-      latestPayloadRef.current = "";
+      queuedPayloadRef.current = "";
+      savedPayloadRef.current = "";
+      pendingStateRef.current = null;
+      saveInFlightRef.current = false;
+      if (flushTimerRef.current !== null) {
+        window.clearTimeout(flushTimerRef.current);
+        flushTimerRef.current = null;
+      }
+      setSaveState("idle");
       return;
     }
+
+    const scheduleFlush = () => {
+      if (flushTimerRef.current !== null) {
+        window.clearTimeout(flushTimerRef.current);
+      }
+
+      flushTimerRef.current = window.setTimeout(() => {
+        void flushQueuedState();
+      }, 250);
+    };
+
+    const flushQueuedState = async () => {
+      if (saveInFlightRef.current || !pendingStateRef.current) {
+        return;
+      }
+
+      const nextState = pendingStateRef.current;
+      const payload = queuedPayloadRef.current;
+      pendingStateRef.current = null;
+      flushTimerRef.current = null;
+      saveInFlightRef.current = true;
+
+      let didSucceed = false;
+
+      try {
+        await Promise.all([
+          savePreferences({
+            method,
+            shortlist: nextState.shortlist,
+            briefAcknowledged: nextState.briefAcknowledged
+          }),
+          saveResponses({
+            method,
+            responses: nextState.responses.map((item) => ({
+              strapId: item.strapId,
+              strapTitle: item.strapTitle,
+              response: item.response,
+              comment: item.comment?.trim() ? item.comment : undefined
+            }))
+          })
+        ]);
+        savedPayloadRef.current = payload;
+        didSucceed = true;
+      } catch (error) {
+        queuedPayloadRef.current = "";
+        console.error("Failed to save deck state", error);
+      } finally {
+        saveInFlightRef.current = false;
+
+        if (pendingStateRef.current) {
+          setSaveState("saving");
+          scheduleFlush();
+          return;
+        }
+
+        if (didSucceed) {
+          setSaveState("saved");
+          window.setTimeout(() => setSaveState("idle"), 1200);
+        } else {
+          setSaveState("idle");
+        }
+      }
+    };
 
     const onMessage = (event: MessageEvent<DeckStateMessage>) => {
       if (event.origin !== window.location.origin) {
@@ -183,36 +258,38 @@ function AuthenticatedDeckShell({
         responses: event.data.responses
       });
 
-      if (latestPayloadRef.current === nextPayload) {
+      if (
+        queuedPayloadRef.current === nextPayload ||
+        savedPayloadRef.current === nextPayload
+      ) {
         return;
       }
 
-      latestPayloadRef.current = nextPayload;
+      queuedPayloadRef.current = nextPayload;
+      pendingStateRef.current = {
+        type: "deck:state-change",
+        method,
+        shortlist: [...event.data.shortlist],
+        briefAcknowledged: event.data.briefAcknowledged,
+        responses: event.data.responses.map((item) => ({
+          strapId: item.strapId,
+          strapTitle: item.strapTitle,
+          response: item.response,
+          comment: item.comment
+        }))
+      };
       setSaveState("saving");
-
-      void Promise.all([
-        savePreferences({
-          method,
-          shortlist: event.data.shortlist,
-          briefAcknowledged: event.data.briefAcknowledged
-        }),
-        saveResponses({
-          method,
-          responses: event.data.responses.map((item) => ({
-            strapId: item.strapId,
-            strapTitle: item.strapTitle,
-            response: item.response,
-            comment: item.comment?.trim() ? item.comment : undefined
-          }))
-        })
-      ]).then(() => {
-        setSaveState("saved");
-        window.setTimeout(() => setSaveState("idle"), 1200);
-      });
+      scheduleFlush();
     };
 
     window.addEventListener("message", onMessage as EventListener);
-    return () => window.removeEventListener("message", onMessage as EventListener);
+    return () => {
+      window.removeEventListener("message", onMessage as EventListener);
+      if (flushTimerRef.current !== null) {
+        window.clearTimeout(flushTimerRef.current);
+        flushTimerRef.current = null;
+      }
+    };
   }, [isAuthenticated, method, savePreferences, saveResponses]);
 
   const syncLabel = isLoading
