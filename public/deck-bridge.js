@@ -62,8 +62,6 @@
 
     withSuppressedNotify(() => {
       window.__deckBridgeState = normalizedState;
-      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
-
       localStorage.setItem(keys.shortlist, JSON.stringify(normalizedState.shortlist ?? []));
       localStorage.setItem(
         keys.brief,
@@ -73,6 +71,8 @@
         keys.responses,
         JSON.stringify(toResponseMap(normalizedState.responses))
       );
+
+      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
     });
   }
 
@@ -118,11 +118,11 @@
 
     withSuppressedNotify(() => {
       window.__deckBridgeState = normalizedState;
-      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
-
       localStorage.setItem(keys.shortlist, JSON.stringify(shortlist));
       localStorage.setItem(keys.brief, briefAcknowledged ? "true" : "false");
       localStorage.setItem(keys.responses, JSON.stringify(responses));
+
+      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
     });
   }
 

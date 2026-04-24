@@ -47,8 +47,29 @@ type DeckHydrateMessage = {
   responses: DeckResponse[];
 };
 
+type DeckStateSnapshot = Omit<DeckHydrateMessage, "type" | "isAuthenticated">;
+
 function normalizeEmail(email: string | undefined) {
   return typeof email === "string" ? email.trim().toLowerCase() : "";
+}
+
+function normalizeResponses(responses: DeckResponse[]) {
+  return responses.map((item) => ({
+    strapId: item.strapId,
+    strapTitle: item.strapTitle,
+    response: item.response,
+    comment: item.comment ?? ""
+  }));
+}
+
+function serializeDeckState(state: DeckStateSnapshot) {
+  return JSON.stringify({
+    shortlist: [...state.shortlist].sort(),
+    briefAcknowledged: state.briefAcknowledged,
+    responses: normalizeResponses(state.responses).sort((a, b) =>
+      a.strapId.localeCompare(b.strapId)
+    )
+  });
 }
 
 const ADMIN_EMAIL = normalizeEmail(
@@ -113,8 +134,10 @@ function AuthenticatedDeckShell({
   const savePreferences = useMutation(api.preferences.saveForCurrentUser);
   const saveResponses = useMutation(api.responses.upsertManyForCurrentUser);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [optimisticState, setOptimisticState] = useState<DeckStateSnapshot | null>(null);
   const queuedPayloadRef = useRef<string>("");
   const savedPayloadRef = useRef<string>("");
+  const optimisticPayloadRef = useRef<string>("");
   const pendingStateRef = useRef<DeckStateMessage | null>(null);
   const flushTimerRef = useRef<number | null>(null);
   const saveInFlightRef = useRef(false);
@@ -125,29 +148,57 @@ function AuthenticatedDeckShell({
   const canSyncFeedback = hasSignedInUser && isAuthenticated;
   const isAdmin = userEmail === ADMIN_EMAIL;
 
-  const iframeState = useMemo<DeckHydrateMessage>(() => ({
-    type: "deck:hydrate",
+  const serverState = useMemo<DeckStateSnapshot>(() => ({
     method,
-    isAuthenticated: canSyncFeedback,
     shortlist: prefs?.shortlist ?? [],
     briefAcknowledged: prefs?.briefAcknowledged ?? false,
     responses:
-      responses?.map((item) => ({
+      responses?.map((item): DeckResponse => ({
         strapId: item.strapId,
         strapTitle: item.strapTitle,
         response: item.response,
         comment: item.comment ?? ""
       })) ?? []
   }), [
-    canSyncFeedback,
     method,
     prefs?.briefAcknowledged,
     prefs?.shortlist,
     responses
   ]);
 
+  const serverPayload = useMemo(() => serializeDeckState(serverState), [serverState]);
+  const activeState = optimisticState ?? serverState;
+  const iframeState = useMemo<DeckHydrateMessage>(() => ({
+    type: "deck:hydrate",
+    isAuthenticated: canSyncFeedback,
+    ...activeState
+  }), [activeState, canSyncFeedback]);
+
   const iframeName = JSON.stringify(iframeState);
   const iframeKey = `${method}:${canSyncFeedback ? userEmail : "guest"}`;
+
+  useEffect(() => {
+    setOptimisticState(null);
+    optimisticPayloadRef.current = "";
+    queuedPayloadRef.current = "";
+    savedPayloadRef.current = "";
+    pendingStateRef.current = null;
+  }, [method, userEmail]);
+
+  useEffect(() => {
+    if (!canSyncFeedback || prefs === undefined || responses === undefined) {
+      return;
+    }
+
+    if (optimisticPayloadRef.current === serverPayload) {
+      optimisticPayloadRef.current = "";
+      setOptimisticState(null);
+    }
+
+    if (!optimisticPayloadRef.current) {
+      savedPayloadRef.current = serverPayload;
+    }
+  }, [canSyncFeedback, prefs, responses, serverPayload]);
 
   useEffect(() => {
     const win = iframeRef.current?.contentWindow;
@@ -254,9 +305,11 @@ function AuthenticatedDeckShell({
       }
 
       const nextPayload = JSON.stringify({
-        shortlist: event.data.shortlist,
+        shortlist: [...event.data.shortlist].sort(),
         briefAcknowledged: event.data.briefAcknowledged,
-        responses: event.data.responses
+        responses: normalizeResponses(event.data.responses).sort((a, b) =>
+          a.strapId.localeCompare(b.strapId)
+        )
       });
 
       if (
@@ -266,18 +319,19 @@ function AuthenticatedDeckShell({
         return;
       }
 
-      queuedPayloadRef.current = nextPayload;
-      pendingStateRef.current = {
-        type: "deck:state-change",
+      const nextState: DeckStateSnapshot = {
         method,
         shortlist: [...event.data.shortlist],
         briefAcknowledged: event.data.briefAcknowledged,
-        responses: event.data.responses.map((item) => ({
-          strapId: item.strapId,
-          strapTitle: item.strapTitle,
-          response: item.response,
-          comment: item.comment
-        }))
+        responses: normalizeResponses(event.data.responses)
+      };
+
+      optimisticPayloadRef.current = nextPayload;
+      setOptimisticState(nextState);
+      queuedPayloadRef.current = nextPayload;
+      pendingStateRef.current = {
+        type: "deck:state-change",
+        ...nextState
       };
       setSaveState("saving");
       scheduleFlush();
