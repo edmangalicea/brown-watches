@@ -20,7 +20,11 @@ const responseItemArg = v.object({
   strapId: v.string(),
   strapTitle: v.string(),
   response: responseArg,
-  comment: v.optional(v.string())
+  comment: v.optional(v.string()),
+  updatedAt: v.optional(v.number()),
+  baseUpdatedAt: v.optional(v.number()),
+  clientUpdatedAt: v.optional(v.number()),
+  baseClientUpdatedAt: v.optional(v.number())
 });
 
 function normalizeComment(comment: string | undefined) {
@@ -71,6 +75,7 @@ export const getForCurrentUser = query({
         strapTitle: response.strapTitle,
         response: response.response,
         comment: response.comment ?? "",
+        clientUpdatedAt: response.clientUpdatedAt ?? response.updatedAt,
         updatedAt: response.updatedAt
       }));
   }
@@ -96,46 +101,80 @@ export const upsertManyForCurrentUser = mutation({
       )
       .collect();
 
-    const nextByStrapId = new Map(
-      args.responses.map((item) => [
-        item.strapId,
-        {
-          ...item,
-          comment: normalizeComment(item.comment)
-        }
-      ])
-    );
+    const existingByStrapId = new Map(existing.map((record) => [record.strapId, record]));
+    const now = Date.now();
+    const conflicts: string[] = [];
 
-    for (const record of existing) {
-      const next = nextByStrapId.get(record.strapId);
+    for (const item of args.responses) {
+      const record = existingByStrapId.get(item.strapId);
+      const clientUpdatedAt = item.clientUpdatedAt ?? now;
+      const baseUpdatedAt = item.baseUpdatedAt ?? item.updatedAt ?? 0;
+      const baseClientUpdatedAt = item.baseClientUpdatedAt ?? 0;
+      const recordClientUpdatedAt = record?.clientUpdatedAt ?? 0;
+      const recordServerUpdatedAt = record?.updatedAt ?? 0;
+      const isBasedOnCurrentRecord = record
+        ? recordClientUpdatedAt > 0
+          ? recordClientUpdatedAt === baseClientUpdatedAt
+          : recordServerUpdatedAt <= baseUpdatedAt
+        : true;
 
-      if (!next) {
-        await ctx.db.delete(record._id);
+      if (record && !isBasedOnCurrentRecord) {
+        conflicts.push(item.strapId);
         continue;
       }
 
-      await ctx.db.patch(record._id, {
+      const next = {
         userEmail: email,
-        strapTitle: next.strapTitle,
-        response: next.response,
-        comment: next.comment,
-        updatedAt: Date.now()
-      });
-      nextByStrapId.delete(record.strapId);
-    }
+        strapTitle: item.strapTitle,
+        response: item.response,
+        comment: normalizeComment(item.comment),
+        clientUpdatedAt,
+        updatedAt: now
+      };
 
-    for (const next of nextByStrapId.values()) {
+      if (record) {
+        if (
+          record.userEmail === next.userEmail &&
+          record.strapTitle === next.strapTitle &&
+          record.response === next.response &&
+          (record.comment ?? undefined) === next.comment &&
+          (record.clientUpdatedAt ?? record.updatedAt) === next.clientUpdatedAt
+        ) {
+          continue;
+        }
+
+        await ctx.db.patch(record._id, next);
+        continue;
+      }
+
       await ctx.db.insert("strapResponses", {
         userId: identity.subject,
-        userEmail: email,
         method: args.method,
-        strapId: next.strapId,
-        strapTitle: next.strapTitle,
-        response: next.response,
-        comment: next.comment,
-        updatedAt: Date.now()
+        strapId: item.strapId,
+        ...next
       });
     }
+
+    const current = await ctx.db
+      .query("strapResponses")
+      .withIndex("by_user_and_method", (q) =>
+        q.eq("userId", identity.subject).eq("method", args.method)
+      )
+      .collect();
+
+    return {
+      conflicts,
+      responses: current
+        .sort((a, b) => a.strapTitle.localeCompare(b.strapTitle))
+        .map((response) => ({
+          strapId: response.strapId,
+          strapTitle: response.strapTitle,
+          response: response.response,
+          comment: response.comment ?? "",
+          clientUpdatedAt: response.clientUpdatedAt ?? response.updatedAt,
+          updatedAt: response.updatedAt
+        }))
+    };
   }
 });
 

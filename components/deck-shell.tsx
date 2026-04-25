@@ -27,6 +27,10 @@ type DeckResponse = {
   strapTitle: string;
   response: StrapOpinion;
   comment?: string;
+  updatedAt?: number;
+  baseUpdatedAt?: number;
+  clientUpdatedAt?: number;
+  baseClientUpdatedAt?: number;
 };
 
 type DeckStateMessage = {
@@ -58,7 +62,11 @@ function normalizeResponses(responses: DeckResponse[]) {
     strapId: item.strapId,
     strapTitle: item.strapTitle,
     response: item.response,
-    comment: item.comment ?? ""
+    comment: item.comment ?? "",
+    updatedAt: item.updatedAt,
+    baseUpdatedAt: item.baseUpdatedAt,
+    clientUpdatedAt: item.clientUpdatedAt,
+    baseClientUpdatedAt: item.baseClientUpdatedAt
   }));
 }
 
@@ -66,9 +74,15 @@ function serializeDeckState(state: DeckStateSnapshot) {
   return JSON.stringify({
     shortlist: [...state.shortlist].sort(),
     briefAcknowledged: state.briefAcknowledged,
-    responses: normalizeResponses(state.responses).sort((a, b) =>
-      a.strapId.localeCompare(b.strapId)
-    )
+    responses: normalizeResponses(state.responses)
+      .map((item) => ({
+        strapId: item.strapId,
+        strapTitle: item.strapTitle,
+        response: item.response,
+        comment: item.comment ?? "",
+        clientUpdatedAt: item.clientUpdatedAt
+      }))
+      .sort((a, b) => a.strapId.localeCompare(b.strapId))
   });
 }
 
@@ -157,7 +171,11 @@ function AuthenticatedDeckShell({
         strapId: item.strapId,
         strapTitle: item.strapTitle,
         response: item.response,
-        comment: item.comment ?? ""
+        comment: item.comment ?? "",
+        updatedAt: item.updatedAt,
+        baseUpdatedAt: item.updatedAt,
+        clientUpdatedAt: item.clientUpdatedAt,
+        baseClientUpdatedAt: item.clientUpdatedAt
       })) ?? []
   }), [
     method,
@@ -256,7 +274,7 @@ function AuthenticatedDeckShell({
       let didSucceed = false;
 
       try {
-        await Promise.all([
+        const [, responseResult] = await Promise.all([
           savePreferences({
             method,
             shortlist: nextState.shortlist,
@@ -268,11 +286,38 @@ function AuthenticatedDeckShell({
               strapId: item.strapId,
               strapTitle: item.strapTitle,
               response: item.response,
-              comment: item.comment?.trim() ? item.comment : undefined
+              comment: item.comment?.trim() ? item.comment : undefined,
+              updatedAt: item.updatedAt,
+              baseUpdatedAt: item.baseUpdatedAt,
+              clientUpdatedAt: item.clientUpdatedAt,
+              baseClientUpdatedAt: item.baseClientUpdatedAt
             }))
           })
         ]);
-        savedPayloadRef.current = payload;
+
+        if (responseResult.conflicts.length > 0) {
+          const resolvedState: DeckStateSnapshot = {
+            method,
+            shortlist: nextState.shortlist,
+            briefAcknowledged: nextState.briefAcknowledged,
+            responses: responseResult.responses.map((item) => ({
+              strapId: item.strapId,
+              strapTitle: item.strapTitle,
+              response: item.response,
+              comment: item.comment ?? "",
+              updatedAt: item.updatedAt,
+              baseUpdatedAt: item.updatedAt,
+              clientUpdatedAt: item.clientUpdatedAt,
+              baseClientUpdatedAt: item.clientUpdatedAt
+            }))
+          };
+          const resolvedPayload = serializeDeckState(resolvedState);
+          optimisticPayloadRef.current = resolvedPayload;
+          setOptimisticState(resolvedState);
+          savedPayloadRef.current = resolvedPayload;
+        } else {
+          savedPayloadRef.current = payload;
+        }
         didSucceed = true;
       } catch (error) {
         queuedPayloadRef.current = "";

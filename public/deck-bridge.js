@@ -32,7 +32,11 @@
           strapId: item.strapId,
           strapTitle: item.strapTitle,
           response: item.response,
-          comment: item.comment ?? ""
+          comment: item.comment ?? "",
+          updatedAt: item.updatedAt,
+          baseUpdatedAt: item.baseUpdatedAt ?? item.updatedAt,
+          clientUpdatedAt: item.clientUpdatedAt,
+          baseClientUpdatedAt: item.baseClientUpdatedAt ?? item.clientUpdatedAt
         }
       ])
     );

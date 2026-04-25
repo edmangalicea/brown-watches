@@ -148,11 +148,17 @@
 
   function upsertResponse(strapId, strapTitle, next) {
     const map = readResponseMap();
+    const current = map[strapId];
+    const clientUpdatedAt = Date.now();
     map[strapId] = {
       strapId,
       strapTitle,
       response: next.response,
-      comment: next.comment ?? ""
+      comment: next.comment ?? "",
+      updatedAt: current?.updatedAt,
+      baseUpdatedAt: current?.baseUpdatedAt ?? current?.updatedAt,
+      clientUpdatedAt,
+      baseClientUpdatedAt: current?.clientUpdatedAt ?? current?.baseClientUpdatedAt
     };
     writeResponseMap(map);
   }

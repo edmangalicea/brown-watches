@@ -17,6 +17,7 @@ export default defineSchema({
     strapTitle: v.string(),
     response: v.union(v.literal("like"), v.literal("dislike")),
     comment: v.optional(v.string()),
+    clientUpdatedAt: v.optional(v.number()),
     updatedAt: v.number()
   })
     .index("by_user_and_method", ["userId", "method"])
