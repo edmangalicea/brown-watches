@@ -39,6 +39,10 @@ type DeckStateMessage = {
   isAuthenticated?: boolean;
   shortlist: string[];
   briefAcknowledged: boolean;
+  preferencesUpdatedAt?: number;
+  basePreferencesUpdatedAt?: number;
+  baseShortlist?: string[];
+  baseBriefAcknowledged?: boolean;
   responses: DeckResponse[];
 };
 
@@ -48,6 +52,10 @@ type DeckHydrateMessage = {
   isAuthenticated: boolean;
   shortlist: string[];
   briefAcknowledged: boolean;
+  preferencesUpdatedAt?: number;
+  basePreferencesUpdatedAt?: number;
+  baseShortlist?: string[];
+  baseBriefAcknowledged?: boolean;
   responses: DeckResponse[];
 };
 
@@ -166,6 +174,10 @@ function AuthenticatedDeckShell({
     method,
     shortlist: prefs?.shortlist ?? [],
     briefAcknowledged: prefs?.briefAcknowledged ?? false,
+    preferencesUpdatedAt: prefs?.updatedAt,
+    basePreferencesUpdatedAt: prefs?.updatedAt,
+    baseShortlist: prefs?.shortlist ?? [],
+    baseBriefAcknowledged: prefs?.briefAcknowledged ?? false,
     responses:
       responses?.map((item): DeckResponse => ({
         strapId: item.strapId,
@@ -274,32 +286,37 @@ function AuthenticatedDeckShell({
       let didSucceed = false;
 
       try {
-        const [, responseResult] = await Promise.all([
-          savePreferences({
-            method,
-            shortlist: nextState.shortlist,
-            briefAcknowledged: nextState.briefAcknowledged
-          }),
-          saveResponses({
-            method,
-            responses: nextState.responses.map((item) => ({
-              strapId: item.strapId,
-              strapTitle: item.strapTitle,
-              response: item.response,
-              comment: item.comment?.trim() ? item.comment : undefined,
-              updatedAt: item.updatedAt,
-              baseUpdatedAt: item.baseUpdatedAt,
-              clientUpdatedAt: item.clientUpdatedAt,
-              baseClientUpdatedAt: item.baseClientUpdatedAt
-            }))
-          })
-        ]);
+        const preferenceResult = await savePreferences({
+          method,
+          shortlist: nextState.shortlist,
+          briefAcknowledged: nextState.briefAcknowledged,
+          baseShortlist: nextState.baseShortlist,
+          baseBriefAcknowledged: nextState.baseBriefAcknowledged,
+          baseUpdatedAt: nextState.basePreferencesUpdatedAt
+        });
+        const responseResult = await saveResponses({
+          method,
+          responses: nextState.responses.map((item) => ({
+            strapId: item.strapId,
+            strapTitle: item.strapTitle,
+            response: item.response,
+            comment: item.comment?.trim() ? item.comment : undefined,
+            updatedAt: item.updatedAt,
+            baseUpdatedAt: item.baseUpdatedAt,
+            clientUpdatedAt: item.clientUpdatedAt,
+            baseClientUpdatedAt: item.baseClientUpdatedAt
+          }))
+        });
 
-        if (responseResult.conflicts.length > 0) {
+        if (preferenceResult.conflict || responseResult.conflicts.length > 0) {
           const resolvedState: DeckStateSnapshot = {
             method,
-            shortlist: nextState.shortlist,
-            briefAcknowledged: nextState.briefAcknowledged,
+            shortlist: preferenceResult.shortlist,
+            briefAcknowledged: preferenceResult.briefAcknowledged,
+            preferencesUpdatedAt: preferenceResult.updatedAt,
+            basePreferencesUpdatedAt: preferenceResult.updatedAt,
+            baseShortlist: preferenceResult.shortlist,
+            baseBriefAcknowledged: preferenceResult.briefAcknowledged,
             responses: responseResult.responses.map((item) => ({
               strapId: item.strapId,
               strapTitle: item.strapTitle,
@@ -368,6 +385,10 @@ function AuthenticatedDeckShell({
         method,
         shortlist: [...event.data.shortlist],
         briefAcknowledged: event.data.briefAcknowledged,
+        preferencesUpdatedAt: event.data.preferencesUpdatedAt,
+        basePreferencesUpdatedAt: event.data.basePreferencesUpdatedAt,
+        baseShortlist: event.data.baseShortlist,
+        baseBriefAcknowledged: event.data.baseBriefAcknowledged,
         responses: normalizeResponses(event.data.responses)
       };
 

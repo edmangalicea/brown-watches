@@ -37,7 +37,10 @@ export const saveForCurrentUser = mutation({
   args: {
     method: methodArg,
     shortlist: v.array(v.string()),
-    briefAcknowledged: v.boolean()
+    briefAcknowledged: v.boolean(),
+    baseShortlist: v.optional(v.array(v.string())),
+    baseBriefAcknowledged: v.optional(v.boolean()),
+    baseUpdatedAt: v.optional(v.number())
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -52,19 +55,49 @@ export const saveForCurrentUser = mutation({
       )
       .unique();
 
+    const baseShortlist = new Set(args.baseShortlist ?? []);
+    const nextShortlist = new Set(args.shortlist);
+    const added = [...nextShortlist].filter((id) => !baseShortlist.has(id));
+    const removed = [...baseShortlist].filter((id) => !nextShortlist.has(id));
+    const existingChangedSinceBase =
+      existing && args.baseUpdatedAt !== undefined && existing.updatedAt > args.baseUpdatedAt;
+    const shortlist = existingChangedSinceBase
+      ? [
+          ...new Set([
+            ...existing.shortlist.filter((id) => !removed.includes(id)),
+            ...added
+          ])
+        ]
+      : args.shortlist;
+    const briefAcknowledged = existingChangedSinceBase
+      ? existing.briefAcknowledged || args.briefAcknowledged
+      : args.briefAcknowledged;
+    const updatedAt = Date.now();
+
     const payload = {
       userId: identity.subject,
       method: args.method,
-      shortlist: args.shortlist,
-      briefAcknowledged: args.briefAcknowledged,
-      updatedAt: Date.now()
+      shortlist,
+      briefAcknowledged,
+      updatedAt
     };
 
     if (existing) {
       await ctx.db.patch(existing._id, payload);
-      return existing._id;
+      return {
+        conflict: Boolean(existingChangedSinceBase),
+        shortlist,
+        briefAcknowledged,
+        updatedAt
+      };
     }
 
-    return await ctx.db.insert("deckPreferences", payload);
+    await ctx.db.insert("deckPreferences", payload);
+    return {
+      conflict: false,
+      shortlist,
+      briefAcknowledged,
+      updatedAt
+    };
   }
 });

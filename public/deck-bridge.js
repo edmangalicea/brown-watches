@@ -61,22 +61,34 @@
             isAuthenticated: false,
             shortlist: [],
             briefAcknowledged: false,
+            preferencesUpdatedAt: undefined,
             responses: []
           };
 
     withSuppressedNotify(() => {
-      window.__deckBridgeState = normalizedState;
-      localStorage.setItem(keys.shortlist, JSON.stringify(normalizedState.shortlist ?? []));
+      const shortlist = normalizedState.shortlist ?? [];
+      const briefAcknowledged = Boolean(normalizedState.briefAcknowledged);
+      window.__deckBridgeState = {
+        ...normalizedState,
+        shortlist,
+        briefAcknowledged,
+        baseShortlist: shortlist,
+        baseBriefAcknowledged: briefAcknowledged,
+        basePreferencesUpdatedAt: normalizedState.preferencesUpdatedAt
+      };
+      localStorage.setItem(keys.shortlist, JSON.stringify(shortlist));
       localStorage.setItem(
         keys.brief,
-        normalizedState.briefAcknowledged ? "true" : "false"
+        briefAcknowledged ? "true" : "false"
       );
       localStorage.setItem(
         keys.responses,
         JSON.stringify(toResponseMap(normalizedState.responses))
       );
 
-      window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
+      window.dispatchEvent(
+        new CustomEvent("deck:bridge-state", { detail: window.__deckBridgeState })
+      );
     });
   }
 
@@ -117,6 +129,10 @@
       isAuthenticated: Boolean(nextState.isAuthenticated),
       shortlist,
       briefAcknowledged,
+      preferencesUpdatedAt: nextState.preferencesUpdatedAt,
+      basePreferencesUpdatedAt: nextState.preferencesUpdatedAt,
+      baseShortlist: shortlist,
+      baseBriefAcknowledged: briefAcknowledged,
       responses: Object.values(responses)
     };
 
@@ -145,6 +161,10 @@
       isAuthenticated: window.__deckBridgeState?.isAuthenticated ?? false,
       shortlist: Array.isArray(shortlist) ? shortlist : [],
       briefAcknowledged: localStorage.getItem(keys.brief) === "true",
+      preferencesUpdatedAt: window.__deckBridgeState?.preferencesUpdatedAt,
+      basePreferencesUpdatedAt: window.__deckBridgeState?.basePreferencesUpdatedAt,
+      baseShortlist: window.__deckBridgeState?.baseShortlist ?? [],
+      baseBriefAcknowledged: window.__deckBridgeState?.baseBriefAcknowledged ?? false,
       responses: Object.values(readResponseMap())
     };
   }
