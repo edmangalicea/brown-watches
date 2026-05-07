@@ -3,7 +3,8 @@
   const keys = {
     shortlist: "tuns-shortlist-v1",
     brief: "tuns-v1-brief-acknowledged",
-    responses: "tuns-responses-v1"
+    responses: "tuns-responses-v1",
+    responsesOwner: "tuns-responses-v1-owner"
   };
   let suppressNotifyCount = 0;
 
@@ -62,6 +63,7 @@
             shortlist: [],
             briefAcknowledged: false,
             preferencesUpdatedAt: undefined,
+            userKey: undefined,
             responses: []
           };
 
@@ -85,6 +87,11 @@
         keys.responses,
         JSON.stringify(toResponseMap(normalizedState.responses))
       );
+      if (normalizedState.userKey) {
+        localStorage.setItem(keys.responsesOwner, normalizedState.userKey);
+      } else {
+        localStorage.removeItem(keys.responsesOwner);
+      }
 
       window.dispatchEvent(
         new CustomEvent("deck:bridge-state", { detail: window.__deckBridgeState })
@@ -107,6 +114,11 @@
     })();
 
     const currentResponses = readResponseMap();
+    const localResponsesOwner = localStorage.getItem(keys.responsesOwner) || "";
+    const nextResponsesOwner = nextState.userKey || "";
+    const canReuseLocalResponses =
+      Boolean(nextState.isAuthenticated && nextResponsesOwner) &&
+      localResponsesOwner === nextResponsesOwner;
     const currentBrief = localStorage.getItem(keys.brief) === "true";
 
     const shortlist =
@@ -115,7 +127,7 @@
         : nextState.shortlist ?? [];
 
     const responses =
-      nextState.isAuthenticated && (!nextState.responses || nextState.responses.length === 0)
+      canReuseLocalResponses && (!nextState.responses || nextState.responses.length === 0)
         ? currentResponses
         : toResponseMap(nextState.responses);
 
@@ -127,6 +139,7 @@
     const normalizedState = {
       method,
       isAuthenticated: Boolean(nextState.isAuthenticated),
+      userKey: nextState.userKey,
       shortlist,
       briefAcknowledged,
       preferencesUpdatedAt: nextState.preferencesUpdatedAt,
@@ -141,6 +154,11 @@
       localStorage.setItem(keys.shortlist, JSON.stringify(shortlist));
       localStorage.setItem(keys.brief, briefAcknowledged ? "true" : "false");
       localStorage.setItem(keys.responses, JSON.stringify(responses));
+      if (nextResponsesOwner) {
+        localStorage.setItem(keys.responsesOwner, nextResponsesOwner);
+      } else {
+        localStorage.removeItem(keys.responsesOwner);
+      }
 
       window.dispatchEvent(new CustomEvent("deck:bridge-state", { detail: normalizedState }));
     });

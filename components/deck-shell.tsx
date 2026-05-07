@@ -50,6 +50,7 @@ type DeckHydrateMessage = {
   type: "deck:hydrate";
   method: DeckMethod;
   isAuthenticated: boolean;
+  userKey?: string;
   shortlist: string[];
   briefAcknowledged: boolean;
   preferencesUpdatedAt?: number;
@@ -201,6 +202,7 @@ function AuthenticatedDeckShell({
   const iframeState = useMemo<DeckHydrateMessage>(() => ({
     type: "deck:hydrate",
     isAuthenticated: canSyncFeedback,
+    userKey: canSyncFeedback ? userEmail : undefined,
     ...activeState
   }), [activeState, canSyncFeedback]);
 
@@ -366,12 +368,11 @@ function AuthenticatedDeckShell({
         return;
       }
 
-      const nextPayload = JSON.stringify({
-        shortlist: [...event.data.shortlist].sort(),
+      const nextPayload = serializeDeckState({
+        method,
+        shortlist: event.data.shortlist,
         briefAcknowledged: event.data.briefAcknowledged,
-        responses: normalizeResponses(event.data.responses).sort((a, b) =>
-          a.strapId.localeCompare(b.strapId)
-        )
+        responses: event.data.responses
       });
 
       if (
