@@ -140,6 +140,7 @@
 
   function writeResponseMap(map) {
     localStorage.setItem(responseKey, JSON.stringify(map));
+    window.dispatchEvent(new CustomEvent("deck:responses-change"));
   }
 
   function getResponse(strapId) {

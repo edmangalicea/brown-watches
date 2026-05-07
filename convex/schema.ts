@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   deckPreferences: defineTable({
     userId: v.string(),
-    method: v.literal("v1"),
+    method: v.union(v.literal("v1"), v.literal("v2")),
     shortlist: v.array(v.string()),
     briefAcknowledged: v.boolean(),
     updatedAt: v.number()
@@ -12,7 +12,7 @@ export default defineSchema({
   strapResponses: defineTable({
     userId: v.string(),
     userEmail: v.string(),
-    method: v.literal("v1"),
+    method: v.union(v.literal("v1"), v.literal("v2")),
     strapId: v.string(),
     strapTitle: v.string(),
     response: v.union(v.literal("like"), v.literal("dislike")),

@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-const methodArg = v.literal("v1");
+const methodArg = v.union(v.literal("v1"), v.literal("v2"));
 
 export const getForCurrentUser = query({
   args: {

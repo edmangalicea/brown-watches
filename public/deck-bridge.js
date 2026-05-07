@@ -215,6 +215,7 @@
   };
 
   window.addEventListener("storage", notifyParent);
+  window.addEventListener("deck:responses-change", notifyParent);
   window.addEventListener("DOMContentLoaded", notifyParent);
   window.addEventListener("load", notifyParent);
   window.addEventListener("message", (event) => {

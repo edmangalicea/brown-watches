@@ -288,14 +288,6 @@ function AuthenticatedDeckShell({
       let didSucceed = false;
 
       try {
-        const preferenceResult = await savePreferences({
-          method,
-          shortlist: nextState.shortlist,
-          briefAcknowledged: nextState.briefAcknowledged,
-          baseShortlist: nextState.baseShortlist,
-          baseBriefAcknowledged: nextState.baseBriefAcknowledged,
-          baseUpdatedAt: nextState.basePreferencesUpdatedAt
-        });
         const responseResult = await saveResponses({
           method,
           responses: nextState.responses.map((item) => ({
@@ -308,6 +300,14 @@ function AuthenticatedDeckShell({
             clientUpdatedAt: item.clientUpdatedAt,
             baseClientUpdatedAt: item.baseClientUpdatedAt
           }))
+        });
+        const preferenceResult = await savePreferences({
+          method,
+          shortlist: nextState.shortlist,
+          briefAcknowledged: nextState.briefAcknowledged,
+          baseShortlist: nextState.baseShortlist,
+          baseBriefAcknowledged: nextState.baseBriefAcknowledged,
+          baseUpdatedAt: nextState.basePreferencesUpdatedAt
         });
 
         if (preferenceResult.conflict || responseResult.conflicts.length > 0) {
