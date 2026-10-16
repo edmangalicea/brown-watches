@@ -22,5 +22,15 @@ export default defineSchema({
   })
     .index("by_user_and_method", ["userId", "method"])
     .index("by_method_and_strap", ["method", "strapId"])
-    .index("by_user_method_and_strap", ["userId", "method", "strapId"])
+    .index("by_user_method_and_strap", ["userId", "method", "strapId"]),
+  strapVisibility: defineTable({
+    method: v.union(v.literal("v1"), v.literal("v2")),
+    strapId: v.string(),
+    strapTitle: v.string(),
+    hidden: v.boolean(),
+    updatedAt: v.number(),
+    updatedByEmail: v.string()
+  })
+    .index("by_method", ["method"])
+    .index("by_method_and_strap", ["method", "strapId"])
 });

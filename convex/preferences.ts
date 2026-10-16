@@ -1,7 +1,16 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, type MutationCtx } from "./_generated/server";
 
 const methodArg = v.union(v.literal("v1"), v.literal("v2"));
+
+async function getHiddenStrapIdSet(ctx: MutationCtx, method: "v1" | "v2") {
+  const rows = await ctx.db
+    .query("strapVisibility")
+    .withIndex("by_method", (q) => q.eq("method", method))
+    .collect();
+
+  return new Set(rows.filter((row) => row.hidden).map((row) => row.strapId));
+}
 
 export const getForCurrentUser = query({
   args: {
@@ -55,20 +64,27 @@ export const saveForCurrentUser = mutation({
       )
       .unique();
 
-    const baseShortlist = new Set(args.baseShortlist ?? []);
-    const nextShortlist = new Set(args.shortlist);
+    const hiddenStrapIds = await getHiddenStrapIdSet(ctx, args.method);
+    const existingHiddenShortlist = existing?.shortlist.filter((id) => hiddenStrapIds.has(id)) ?? [];
+    const visibleShortlist = args.shortlist.filter((id) => !hiddenStrapIds.has(id));
+    const visibleBaseShortlist = (args.baseShortlist ?? []).filter((id) => !hiddenStrapIds.has(id));
+    const visibleExistingShortlist =
+      existing?.shortlist.filter((id) => !hiddenStrapIds.has(id)) ?? [];
+    const baseShortlist = new Set(visibleBaseShortlist);
+    const nextShortlist = new Set(visibleShortlist);
     const added = [...nextShortlist].filter((id) => !baseShortlist.has(id));
     const removed = [...baseShortlist].filter((id) => !nextShortlist.has(id));
     const existingChangedSinceBase =
       existing && args.baseUpdatedAt !== undefined && existing.updatedAt > args.baseUpdatedAt;
-    const shortlist = existingChangedSinceBase
+    const visibleResolvedShortlist = existingChangedSinceBase
       ? [
           ...new Set([
-            ...existing.shortlist.filter((id) => !removed.includes(id)),
+            ...visibleExistingShortlist.filter((id) => !removed.includes(id)),
             ...added
           ])
         ]
-      : args.shortlist;
+      : visibleShortlist;
+    const shortlist = [...new Set([...visibleResolvedShortlist, ...existingHiddenShortlist])];
     const briefAcknowledged = existingChangedSinceBase
       ? existing.briefAcknowledged || args.briefAcknowledged
       : args.briefAcknowledged;

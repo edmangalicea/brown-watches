@@ -32,6 +32,15 @@ function normalizeComment(comment: string | undefined) {
   return trimmed.length ? trimmed : undefined;
 }
 
+async function getHiddenStrapIdSet(ctx: QueryCtx | MutationCtx, method: "v1" | "v2") {
+  const rows = await ctx.db
+    .query("strapVisibility")
+    .withIndex("by_method", (q) => q.eq("method", method))
+    .collect();
+
+  return new Set(rows.filter((row) => row.hidden).map((row) => row.strapId));
+}
+
 async function requireIdentity(ctx: QueryCtx | MutationCtx) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
@@ -51,6 +60,15 @@ async function requireAdmin(ctx: QueryCtx | MutationCtx) {
   return identity;
 }
 
+export const getHiddenStrapIds = query({
+  args: {
+    method: methodArg
+  },
+  handler: async (ctx, args) => {
+    return [...(await getHiddenStrapIdSet(ctx, args.method))].sort();
+  }
+});
+
 export const getForCurrentUser = query({
   args: {
     method: methodArg
@@ -67,8 +85,10 @@ export const getForCurrentUser = query({
         q.eq("userId", identity.subject).eq("method", args.method)
       )
       .collect();
+    const hiddenStrapIds = await getHiddenStrapIdSet(ctx, args.method);
 
     return responses
+      .filter((response) => !hiddenStrapIds.has(response.strapId))
       .sort((a, b) => a.strapTitle.localeCompare(b.strapTitle))
       .map((response) => ({
         strapId: response.strapId,
@@ -101,11 +121,16 @@ export const upsertManyForCurrentUser = mutation({
       )
       .collect();
 
+    const hiddenStrapIds = await getHiddenStrapIdSet(ctx, args.method);
     const existingByStrapId = new Map(existing.map((record) => [record.strapId, record]));
     const now = Date.now();
     const conflicts: string[] = [];
 
     for (const item of args.responses) {
+      if (hiddenStrapIds.has(item.strapId)) {
+        continue;
+      }
+
       const record = existingByStrapId.get(item.strapId);
       const clientUpdatedAt = item.clientUpdatedAt ?? now;
       const baseUpdatedAt = item.baseUpdatedAt ?? item.updatedAt ?? 0;
@@ -165,6 +190,7 @@ export const upsertManyForCurrentUser = mutation({
     return {
       conflicts,
       responses: current
+        .filter((response) => !hiddenStrapIds.has(response.strapId))
         .sort((a, b) => a.strapTitle.localeCompare(b.strapTitle))
         .map((response) => ({
           strapId: response.strapId,
@@ -174,6 +200,75 @@ export const upsertManyForCurrentUser = mutation({
           clientUpdatedAt: response.clientUpdatedAt ?? response.updatedAt,
           updatedAt: response.updatedAt
         }))
+    };
+  }
+});
+
+export const getAdminVisibility = query({
+  args: {
+    method: methodArg
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+
+    const rows = await ctx.db
+      .query("strapVisibility")
+      .withIndex("by_method", (q) => q.eq("method", args.method))
+      .collect();
+
+    return rows
+      .sort((a, b) => a.strapTitle.localeCompare(b.strapTitle))
+      .map((row) => ({
+        strapId: row.strapId,
+        strapTitle: row.strapTitle,
+        hidden: row.hidden,
+        updatedAt: row.updatedAt,
+        updatedByEmail: row.updatedByEmail
+      }));
+  }
+});
+
+export const setStrapHidden = mutation({
+  args: {
+    method: methodArg,
+    strapId: v.string(),
+    strapTitle: v.string(),
+    hidden: v.boolean()
+  },
+  handler: async (ctx, args) => {
+    const identity = await requireAdmin(ctx);
+    const updatedByEmail = normalizeEmail(identity.email);
+    const updatedAt = Date.now();
+
+    const existing = await ctx.db
+      .query("strapVisibility")
+      .withIndex("by_method_and_strap", (q) =>
+        q.eq("method", args.method).eq("strapId", args.strapId)
+      )
+      .unique();
+
+    const next = {
+      strapTitle: args.strapTitle,
+      hidden: args.hidden,
+      updatedAt,
+      updatedByEmail
+    };
+
+    if (existing) {
+      await ctx.db.patch(existing._id, next);
+    } else {
+      await ctx.db.insert("strapVisibility", {
+        method: args.method,
+        strapId: args.strapId,
+        ...next
+      });
+    }
+
+    return {
+      strapId: args.strapId,
+      hidden: args.hidden,
+      updatedAt,
+      updatedByEmail
     };
   }
 });
@@ -206,18 +301,20 @@ export const getAdminDashboard = query({
         return true;
       }
 
-        return (
-          item.strapTitle.toLowerCase().includes(search) ||
-          normalizeEmail(item.userEmail).includes(search) ||
-          (item.comment ?? "").toLowerCase().includes(search)
-        );
-      });
+      return (
+        item.strapTitle.toLowerCase().includes(search) ||
+        normalizeEmail(item.userEmail).includes(search) ||
+        (item.comment ?? "").toLowerCase().includes(search)
+      );
+    });
+    const hiddenStrapIds = await getHiddenStrapIdSet(ctx, args.method);
 
     const grouped = new Map<
       string,
       {
         strapId: string;
         strapTitle: string;
+        hidden: boolean;
         entries: Array<{
           userEmail: string;
           response: "like" | "dislike";
@@ -232,6 +329,7 @@ export const getAdminDashboard = query({
         grouped.set(item.strapId, {
           strapId: item.strapId,
           strapTitle: item.strapTitle,
+          hidden: hiddenStrapIds.has(item.strapId),
           entries: []
         });
       }
@@ -258,6 +356,7 @@ export const getAdminDashboard = query({
         return {
           strapId: group.strapId,
           strapTitle: group.strapTitle,
+          hidden: group.hidden,
           totalLikes,
           totalDislikes,
           totalResponses,
@@ -269,6 +368,9 @@ export const getAdminDashboard = query({
         };
       })
       .sort((a, b) => {
+        if (a.hidden !== b.hidden) {
+          return a.hidden ? 1 : -1;
+        }
         if (b.totalLikes !== a.totalLikes) {
           return b.totalLikes - a.totalLikes;
         }
@@ -277,16 +379,18 @@ export const getAdminDashboard = query({
         }
         return a.strapTitle.localeCompare(b.strapTitle);
       });
+    const activeFiltered = filtered.filter((item) => !hiddenStrapIds.has(item.strapId));
+    const activeStraps = straps.filter((strap) => !strap.hidden);
 
     return {
       respondents,
       summary: {
-        respondentCount: new Set(filtered.map((item) => normalizeEmail(item.userEmail))).size,
-        strapCount: straps.length,
-        totalLikes: filtered.filter((item) => item.response === "like").length,
-        totalDislikes: filtered.filter((item) => item.response === "dislike").length,
+        respondentCount: new Set(activeFiltered.map((item) => normalizeEmail(item.userEmail))).size,
+        strapCount: activeStraps.length,
+        totalLikes: activeFiltered.filter((item) => item.response === "like").length,
+        totalDislikes: activeFiltered.filter((item) => item.response === "dislike").length,
         totalCommentedStraps: new Set(
-          filtered
+          activeFiltered
             .filter((item) => (item.comment ?? "").trim().length > 0)
             .map((item) => item.strapId)
         ).size
@@ -307,6 +411,7 @@ export const getAdminRespondentDetail = query({
 
     const respondentEmail = normalizeEmail(args.respondentEmail);
     const search = args.search?.trim().toLowerCase() ?? "";
+    const hiddenStrapIds = await getHiddenStrapIdSet(ctx, args.method);
 
     const rows = await ctx.db
       .query("strapResponses")
@@ -332,6 +437,7 @@ export const getAdminRespondentDetail = query({
         strapTitle: item.strapTitle,
         response: item.response,
         comment: item.comment ?? "",
+        hidden: hiddenStrapIds.has(item.strapId),
         updatedAt: item.updatedAt,
         userEmail: item.userEmail
       }));

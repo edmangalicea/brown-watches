@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en" data-deck-method="v2">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Method 2 - TUNS Watch Strap Wardrobe</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef3ef;
+      --ink: #172321;
+      --muted: #53615d;
+      --line: #cfd9d4;
+      --panel: #fbfcfa;
+      --deep: #102326;
+      --deep-2: #173c3b;
+      --accent: #b28756;
+      --accent-2: #4f7665;
+      --danger: #8b3d3d;
+      --good: #2f6f54;
+      --shadow: 0 14px 34px rgba(16, 35, 38, 0.10);
+      --max: 1500px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        linear-gradient(90deg, rgba(16,35,38,0.06) 1px, transparent 1px),
+        linear-gradient(180deg, #f7faf8 0%, var(--bg) 100%);
+      background-size: 28px 28px, auto;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .page-shell { width: min(calc(100% - 32px), var(--max)); margin: 18px auto 48px; }
+    .method-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--deep), var(--deep-2));
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .method-kicker {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 999px;
+      color: #d8e5df;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: 0; }
+    .method-banner h1 { max-width: 900px; font-size: clamp(2rem, 4.6vw, 4.25rem); font-weight: 850; }
+    .method-banner p { max-width: 880px; margin: 14px 0 0; color: #c5d6d0; line-height: 1.6; font-size: 1rem; }
+    .method-stats { display: grid; grid-template-columns: repeat(3, minmax(96px, 1fr)); gap: 10px; min-width: min(420px, 100%); }
+    .stat-box { padding: 13px; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; background: rgba(255,255,255,0.08); }
+    .stat-box strong { display: block; font-size: 1.45rem; }
+    .stat-box span { color: #c5d6d0; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .brief-panel, .toolbar, .panel, .sidebar { border: 1px solid var(--line); border-radius: 8px; background: rgba(251,252,250,0.94); box-shadow: var(--shadow); }
+    .brief-panel { margin-top: 14px; padding: 18px; }
+    .brief-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .brief-title { font-size: 1.25rem; }
+    .brief-status { padding: 7px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .brief-panel.is-acknowledged .brief-status { color: var(--good); border-color: rgba(47,111,84,0.35); background: rgba(47,111,84,0.08); }
+    .brief-copy { display: grid; gap: 10px; margin-top: 12px; color: var(--muted); line-height: 1.58; max-width: 1050px; }
+    .brief-copy p { margin: 0; }
+    .brief-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+    .brief-check { display: inline-flex; align-items: center; gap: 9px; font-size: 0.92rem; cursor: pointer; }
+    .brief-check input { width: 18px; height: 18px; accent-color: var(--deep-2); }
+    .brief-button, .chip, .button, .favorite-btn, .lightbox-fav, .lightbox-close, .lightbox-nav { font: inherit; cursor: pointer; }
+    .brief-button, .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 10px 13px; border: 1px solid var(--deep-2); border-radius: 8px; background: var(--deep-2); color: white; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+    .brief-button:disabled { cursor: not-allowed; opacity: 0.45; }
+    .workspace { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; margin-top: 18px; align-items: start; }
+    .sidebar { position: sticky; top: 14px; display: grid; gap: 14px; padding: 16px; }
+    .sidebar h2 { font-size: 1rem; }
+    .sidebar p { margin: 0; color: var(--muted); line-height: 1.45; font-size: 0.9rem; }
+    .nav-list { display: grid; gap: 7px; }
+    .nav-link { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 8px; align-items: center; padding: 9px; border: 1px solid transparent; border-radius: 8px; color: var(--muted); font-size: 0.9rem; line-height: 1.2; }
+    .nav-link strong { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(79,118,101,0.12); color: var(--deep-2); font-size: 0.78rem; }
+    .nav-link:hover, .nav-link.active { border-color: rgba(79,118,101,0.28); background: white; color: var(--ink); }
+    .main { display: grid; gap: 16px; }
+    .toolbar { position: sticky; top: 12px; z-index: 30; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 13px; }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar-label { color: var(--muted); font-size: 0.74rem; font-weight: 850; letter-spacing: 0.12em; text-transform: uppercase; }
+    .chip { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); font-size: 0.84rem; font-weight: 750; }
+    .chip.active { background: var(--deep-2); border-color: var(--deep-2); color: white; }
+    .chip.ghost { color: var(--muted); background: transparent; }
+    .chip .count { min-width: 22px; padding: 1px 6px; border-radius: 999px; background: rgba(79,118,101,0.13); color: var(--deep-2); text-align: center; font-size: 0.74rem; }
+    .chip.active .count { background: rgba(255,255,255,0.18); color: white; }
+    .panel { padding: 18px; }
+    .intro-panel { display: grid; gap: 8px; }
+    .intro-panel h2, .section-head h2 { font-size: clamp(1.35rem, 2.2vw, 2rem); }
+    .intro-panel p, .section-head p { margin: 0; color: var(--muted); line-height: 1.58; max-width: 980px; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 360px); gap: 16px; align-items: start; margin-bottom: 16px; }
+    .section-rank { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 9px; color: var(--accent-2); font-size: 0.76rem; font-weight: 850; letter-spacing: 0.12em; text-transform: uppercase; }
+    .section-rank strong { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(79,118,101,0.13); color: var(--deep-2); letter-spacing: 0; }
+    .role-note { padding: 13px; border-left: 4px solid var(--accent); background: #fff; color: var(--muted); line-height: 1.45; font-size: 0.9rem; }
+    .strap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .strap-card { display: grid; grid-template-columns: minmax(180px, 0.86fr) minmax(0, 1.14fr); gap: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: white; transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease, opacity 140ms ease; }
+    .strap-card:hover { transform: translateY(-2px); border-color: rgba(79,118,101,0.42); box-shadow: 0 12px 24px rgba(16,35,38,0.10); }
+    .strap-card.favorited { border-color: var(--accent); box-shadow: 0 12px 24px rgba(178,135,86,0.18); }
+    .strap-card.hidden, .strap-card.admin-hidden { display: none; }
+    .strap-media { position: relative; overflow: hidden; border-radius: 8px; background: #d8ded9; aspect-ratio: 4 / 3; cursor: zoom-in; }
+    .strap-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 320ms ease; }
+    .strap-media:hover img { transform: scale(1.045); }
+    .badge { position: absolute; left: 9px; top: 9px; padding: 5px 8px; border-radius: 999px; background: rgba(16,35,38,0.82); color: white; font-size: 0.74rem; font-weight: 850; letter-spacing: 0.05em; }
+    .favorite-btn { position: absolute; right: 9px; top: 9px; min-width: 34px; height: 34px; border: 0; border-radius: 50%; background: rgba(16,35,38,0.70); color: white; font-size: 12px; font-weight: 900; }
+    .favorite-btn.active { background: var(--accent); }
+    .zoom-hint { position: absolute; right: 9px; bottom: 9px; padding: 4px 7px; border-radius: 999px; background: rgba(16,35,38,0.70); color: white; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity 140ms ease; }
+    .strap-media:hover .zoom-hint { opacity: 1; }
+    .strap-copy { display: grid; gap: 10px; min-width: 0; }
+    .strap-tier { display: inline-flex; width: fit-content; padding: 5px 8px; border-radius: 999px; background: rgba(79,118,101,0.10); color: var(--deep-2); font-size: 0.72rem; font-weight: 850; letter-spacing: 0.10em; text-transform: uppercase; }
+    .strap-tier.primary { background: rgba(178,135,86,0.16); color: #7c552a; }
+    .strap-title { font-size: 1.08rem; line-height: 1.22; font-weight: 850; overflow-wrap: anywhere; }
+    .shade-block { display: grid; gap: 7px; }
+    .shade-line, .score-grid > div { padding: 9px; border: 1px solid #e3e9e5; border-radius: 8px; background: #f8faf8; color: var(--muted); line-height: 1.38; font-size: 0.86rem; }
+    .shade-label { display: block; margin-bottom: 4px; color: var(--ink); font-size: 0.68rem; font-weight: 850; letter-spacing: 0.10em; text-transform: uppercase; }
+    .target-shade { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 750; }
+    .shade-swatch { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(23,35,33,0.24); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); }
+    .shade-hex { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; text-transform: uppercase; }
+    .score-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .score-grid strong { display: block; color: var(--ink); font-size: 0.95rem; }
+    .strap-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 2px; }
+    .button.secondary { background: white; border-color: var(--line); color: var(--ink); }
+    .empty-state { display: none; padding: 28px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); text-align: center; background: white; }
+    .panel.is-empty .strap-grid { display: none; }
+    .panel.is-empty .empty-state { display: block; }
+    .lightbox { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(8,17,18,0.92); }
+    .lightbox.embedded { position: absolute; inset: auto 0 auto 0; }
+    .lightbox.open { display: flex; }
+    .lightbox-stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .lightbox-image { max-width: 90vw; max-height: 76vh; object-fit: contain; border-radius: 8px; background: #101619; box-shadow: 0 28px 80px rgba(0,0,0,0.45); }
+    .lightbox.embedded .lightbox-image { max-height: var(--embedded-lightbox-image-max-height, 76vh); }
+    .lightbox-caption { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(760px, 92vw); padding: 14px; border-radius: 8px; background: rgba(251,252,250,0.97); color: var(--ink); text-align: center; }
+    .lightbox-caption strong { display: block; margin-bottom: 4px; }
+    .lightbox-caption span { display: block; color: var(--muted); font-size: 0.86rem; }
+    .lightbox-caption a { display: inline-flex; margin-top: 8px; padding: 7px 11px; border-radius: 8px; background: var(--deep-2); color: white; font-size: 0.82rem; font-weight: 800; }
+    .lightbox-counter { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); padding: 7px 11px; border-radius: 999px; background: rgba(255,255,255,0.15); color: white; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.10em; }
+    .lightbox-fav, .lightbox-close, .lightbox-nav { position: absolute; border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.12); color: white; }
+    .lightbox-fav { top: 18px; left: 18px; padding: 9px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 800; }
+    .lightbox-fav.active { background: var(--accent); border-color: var(--accent); }
+    .lightbox-close { top: 18px; right: 18px; width: 42px; height: 42px; border-radius: 50%; font-size: 22px; }
+    .lightbox-nav { top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; font-size: 25px; }
+    .lightbox-nav.prev { left: 18px; }
+    .lightbox-nav.next { right: 18px; }
+    @media (max-width: 1180px) { .workspace { grid-template-columns: 1fr; } .sidebar, .toolbar { position: static; } .strap-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .page-shell { width: min(calc(100% - 20px), var(--max)); margin-top: 10px; } .method-banner, .section-head, .strap-card { grid-template-columns: 1fr; } .method-stats, .score-grid { grid-template-columns: 1fr; } .method-banner, .panel, .brief-panel { padding: 15px; } .strap-media { aspect-ratio: 16 / 11; } .toolbar { align-items: stretch; } }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="method-banner">
+      <div>
+        <span class="method-kicker">Method 2 - separate TUNS wardrobe report</span>
+        <h1>Watch Strap Wardrobe Rating Workspace</h1>
+        <p>This method rates the 10 wardrobe slots and their three alternatives from the newer TUNS report. It is intentionally separate from method 1: different data source, different grouping logic, different visual treatment, and independent saved opinions.</p>
+      </div>
+      <div class="method-stats" aria-label="Method summary">
+        <div class="stat-box"><strong>10</strong><span>Wardrobe slots</span></div>
+        <div class="stat-box"><strong>40</strong><span>Straps</span></div>
+        <div class="stat-box"><strong>9</strong><span>Color lanes</span></div>
+      </div>
+    </header>
+
+    <section class="brief-panel" id="wardrobe-brief" aria-labelledby="wardrobe-brief-title">
+      <div class="brief-head">
+        <h2 class="brief-title" id="wardrobe-brief-title">Reviewer Brief</h2>
+        <div class="brief-status" id="brief-status">Acknowledgment required</div>
+      </div>
+      <div class="brief-copy">
+        <p>Rate these as a practical wardrobe system for the listed watch collection. A like means the strap deserves to stay in the method 2 buying pool. A dislike means the strap is weaker, redundant, too loud, too mature, or not useful enough for the watch group.</p>
+        <p>Use the color swatch, width guidance, best-watch notes, price, store rating, and value/quality scores while judging. Keep method 2 opinions independent from method 1.</p>
+      </div>
+      <div class="brief-actions">
+        <label class="brief-check" for="brief-read-checkbox">
+          <input id="brief-read-checkbox" type="checkbox" />
+          <span>I have read the method 2 reviewer brief.</span>
+        </label>
+        <button class="brief-button" id="brief-acknowledge" type="button" disabled>Acknowledge Brief</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <h2>Wardrobe Slots</h2>
+        <p>These are buying roles, not style families. Each slot has one primary and three alternatives.</p>
+        <nav class="nav-list" id="nav-list"></nav>
+      </aside>
+
+      <main class="main">
+        <section class="panel intro-panel">
+          <h2>Before You Rate</h2>
+          <p>Use method 2 as a clean second pass. Compare each strap inside its buying role first, then decide whether it deserves to be kept in the overall wardrobe.</p>
+        </section>
+
+        <section class="toolbar" role="toolbar" aria-label="Filters and view options">
+          <div class="toolbar-group" role="radiogroup" aria-label="Filter mode">
+            <span class="toolbar-label">Show</span>
+            <button class="chip active" data-filter="all" role="radio" aria-checked="true">All <span class="count" id="count-all">0</span></button>
+            <button class="chip" data-filter="primary" role="radio" aria-checked="false">Primaries <span class="count" id="count-primary">0</span></button>
+            <button class="chip" data-filter="alternative" role="radio" aria-checked="false">Alternatives <span class="count" id="count-alternative">0</span></button>
+            <button class="chip" data-filter="narrow" role="radio" aria-checked="false">Narrow Cases <span class="count" id="count-narrow">0</span></button>
+            <button class="chip" data-filter="shortlist" role="radio" aria-checked="false">My Shortlist <span class="count" id="count-shortlist">0</span></button>
+          </div>
+          <div class="toolbar-group">
+            <span class="toolbar-label">Shortlist</span>
+            <button class="chip ghost" id="clear-shortlist" type="button">Clear all</button>
+          </div>
+        </section>
+
+        <div id="sections"></div>
+      </main>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Strap preview">
+    <div class="lightbox-stage">
+      <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+      <button class="lightbox-fav" id="lightbox-fav" type="button" aria-label="Toggle shortlist"><span id="lightbox-fav-icon">+</span> <span id="lightbox-fav-label">Save</span></button>
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">x</button>
+      <button class="lightbox-nav prev" id="lightbox-prev" type="button" aria-label="Previous">&lt;</button>
+      <img class="lightbox-image" id="lightbox-image" alt="" />
+      <button class="lightbox-nav next" id="lightbox-next" type="button" aria-label="Next">&gt;</button>
+      <div class="lightbox-caption" id="lightbox-caption">
+        <strong></strong>
+        <span></span>
+        <a href="#" target="_blank" rel="noreferrer">Open listing</a>
+      </div>
+    </div>
+  </div>
+
+  <script>window.__deckMethod = "v2";</script>
+  <script src="/deck-bridge.js"></script>
+  <script>
+    const straps = [{"id": "https://tunsstore.com/product/boxcafl-black-leather-watch-strap-2", "sectionId": "black-dress-anchor", "sectionRank": 1, "sectionTitle": "Black dress anchor", "sectionSummary": "Formal baseline for the stainless dress and chrono group, with narrow versions for the rectangles.", "pickRank": 1, "status": "Primary", "product": "Box Calf Black Leather Watch Strap", "url": "https://tunsstore.com/product/boxcafl-black-leather-watch-strap-2", "image": "/images/tuns-method-2/IMG_1213-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1213-scaled.webp", "priceUsd": 40.0, "rating": 5.0, "reviewCount": 7, "inStock": true, "category": "Boxcalf Strap", "colorKey": "black", "colorName": "Black", "colorHex": "#000000", "hardware": "Silver hardware for steel; gold or brass only when used on the gold Seiko.", "orderWidth": "20-18mm Slim for the 20mm stainless group. Use 16-14mm or Lugs custom for the rectangles.", "bestWatches": "San Martin, Pierre Paulin sector, BERNY green, Watchdives white, Seiko/I&W if ordered narrow.", "valueScore": 9.0, "qualityScore": 8.0, "note": "Clean formal baseline for black, white, green, and MOP dials without looking flashy.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/slim-saffiano-black-leather-watch-strap", "sectionId": "black-dress-anchor", "sectionRank": 1, "sectionTitle": "Black dress anchor", "sectionSummary": "Formal baseline for the stainless dress and chrono group, with narrow versions for the rectangles.", "pickRank": 2, "status": "Alternative", "product": "Slim Saffiano Black Leather Watch Strap", "url": "https://tunsstore.com/product/slim-saffiano-black-leather-watch-strap", "image": "/images/tuns-method-2/saffiano-15-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/04/saffiano-15-scaled.webp", "priceUsd": 45.0, "rating": 4.8, "reviewCount": 5, "inStock": true, "category": "Epsom Strap", "colorKey": "black", "colorName": "Black", "colorHex": "#000000", "hardware": "Silver hardware for steel; gold or brass only when used on the gold Seiko.", "orderWidth": "20-18mm Slim for the 20mm stainless group. Use 16-14mm or Lugs custom for the rectangles.", "bestWatches": "San Martin, Pierre Paulin sector, BERNY green, Watchdives white, Seiko/I&W if ordered narrow.", "valueScore": 8.0, "qualityScore": 7.5, "note": "More subtle texture than plain calf; good if black calf feels too flat.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/lizard-black-leather-watch-strap", "sectionId": "black-dress-anchor", "sectionRank": 1, "sectionTitle": "Black dress anchor", "sectionSummary": "Formal baseline for the stainless dress and chrono group, with narrow versions for the rectangles.", "pickRank": 3, "status": "Alternative", "product": "Lizard Black Leather Watch Strap", "url": "https://tunsstore.com/product/lizard-black-leather-watch-strap", "image": "/images/tuns-method-2/ki-da-6-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/07/ki-da-6-scaled.webp", "priceUsd": 52.0, "rating": 4.83, "reviewCount": 6, "inStock": true, "category": "Lizard Strap", "colorKey": "black", "colorName": "Black", "colorHex": "#000000", "hardware": "Silver hardware for steel; gold or brass only when used on the gold Seiko.", "orderWidth": "20-18mm Slim for the 20mm stainless group. Use 16-14mm or Lugs custom for the rectangles.", "bestWatches": "San Martin, Pierre Paulin sector, BERNY green, Watchdives white, Seiko/I&W if ordered narrow.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Sharper texture for dress watches; avoid if outfit already has too many dressy details.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/alligator-minimalist-style-black-vietnam-leather-watch-strap", "sectionId": "black-dress-anchor", "sectionRank": 1, "sectionTitle": "Black dress anchor", "sectionSummary": "Formal baseline for the stainless dress and chrono group, with narrow versions for the rectangles.", "pickRank": 4, "status": "Alternative", "product": "Alligator Minimalist Style Black Vietnam Leather Watch Strap", "url": "https://tunsstore.com/product/alligator-minimalist-style-black-vietnam-leather-watch-strap", "image": "/images/tuns-method-2/MG_3353-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3353-scaled.webp", "priceUsd": 57.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Alligator Strap", "colorKey": "black", "colorName": "Black", "colorHex": "#000000", "hardware": "Silver hardware for steel; gold or brass only when used on the gold Seiko.", "orderWidth": "20-18mm Slim for the 20mm stainless group. Use 16-14mm or Lugs custom for the rectangles.", "bestWatches": "San Martin, Pierre Paulin sector, BERNY green, Watchdives white, Seiko/I&W if ordered narrow.", "valueScore": 7.0, "qualityScore": 8.5, "note": "Higher-end black dress option; best for evening or tailoring.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/butero-dark-brown-leather-watch-strap", "sectionId": "dark-brown-all-purpose-leather", "sectionRank": 2, "sectionTitle": "Dark-brown all-purpose leather", "sectionSummary": "The practical daily leather slot: warm, polished, and easy across cream, salmon, white, and steel.", "pickRank": 1, "status": "Primary", "product": "Butero Dark Brown Leather Watch Strap", "url": "https://tunsstore.com/product/butero-dark-brown-leather-watch-strap", "image": "/images/tuns-method-2/IMG_1731-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1731-scaled.webp", "priceUsd": 52.0, "rating": 5.0, "reviewCount": 6, "inStock": true, "category": "Butero Strap", "colorKey": "dark_brown", "colorName": "Dark Brown", "colorHex": "#654321", "hardware": "Silver on steel; brass on bronze and gold cases.", "orderWidth": "20-18mm Slim or Padding for the 20mm group; duplicate in 19-16mm and 18-16mm if you want Farasute/Hruodland harmony.", "bestWatches": "Timex, Pierre Paulin salmon, Watchdives white, San Martin, Hruodland, Farasute.", "valueScore": 8.5, "qualityScore": 8.5, "note": "The most versatile warm leather: refined enough for dates, relaxed enough for casual wear.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/vegtan-dark-brown-leather-watch-strap", "sectionId": "dark-brown-all-purpose-leather", "sectionRank": 2, "sectionTitle": "Dark-brown all-purpose leather", "sectionSummary": "The practical daily leather slot: warm, polished, and easy across cream, salmon, white, and steel.", "pickRank": 2, "status": "Alternative", "product": "Vegtan Dark Brown Leather Watch Strap", "url": "https://tunsstore.com/product/vegtan-dark-brown-leather-watch-strap", "image": "/images/tuns-method-2/MG_3268-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3268-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 2, "inStock": true, "category": "Vegtan Strap", "colorKey": "dark_brown", "colorName": "Dark Brown", "colorHex": "#654321", "hardware": "Silver on steel; brass on bronze and gold cases.", "orderWidth": "20-18mm Slim or Padding for the 20mm group; duplicate in 19-16mm and 18-16mm if you want Farasute/Hruodland harmony.", "bestWatches": "Timex, Pierre Paulin salmon, Watchdives white, San Martin, Hruodland, Farasute.", "valueScore": 8.5, "qualityScore": 8.0, "note": "Drier, more rugged brown; good value.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/tuscany-dark-brown-leather-watch-strap", "sectionId": "dark-brown-all-purpose-leather", "sectionRank": 2, "sectionTitle": "Dark-brown all-purpose leather", "sectionSummary": "The practical daily leather slot: warm, polished, and easy across cream, salmon, white, and steel.", "pickRank": 3, "status": "Alternative", "product": "Tuscany Dark Brown Leather Watch Strap ( Square TAIL )", "url": "https://tunsstore.com/product/tuscany-dark-brown-leather-watch-strap", "image": "/images/tuns-method-2/TUSCANY-11-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/TUSCANY-11-scaled.webp", "priceUsd": 54.0, "rating": 5.0, "reviewCount": 4, "inStock": true, "category": "Rally Strap, Tuscany Leather Strap", "colorKey": "dark_brown", "colorName": "Dark Brown", "colorHex": "#654321", "hardware": "Silver on steel; brass on bronze and gold cases.", "orderWidth": "20-18mm Slim or Padding for the 20mm group; duplicate in 19-16mm and 18-16mm if you want Farasute/Hruodland harmony.", "bestWatches": "Timex, Pierre Paulin salmon, Watchdives white, San Martin, Hruodland, Farasute.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Vintage square-tail character; better for casual/dress-casual.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/allran-sully-dark-brown-watch-strap", "sectionId": "dark-brown-all-purpose-leather", "sectionRank": 2, "sectionTitle": "Dark-brown all-purpose leather", "sectionSummary": "The practical daily leather slot: warm, polished, and easy across cream, salmon, white, and steel.", "pickRank": 4, "status": "Alternative", "product": "Alran Suly Dark Brown Watch Strap", "url": "https://tunsstore.com/product/allran-sully-dark-brown-watch-strap", "image": "/images/tuns-method-2/IMG_1818-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1818-scaled.webp", "priceUsd": 47.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Allran Strap", "colorKey": "dark_brown", "colorName": "Dark Brown", "colorHex": "#654321", "hardware": "Silver on steel; brass on bronze and gold cases.", "orderWidth": "20-18mm Slim or Padding for the 20mm group; duplicate in 19-16mm and 18-16mm if you want Farasute/Hruodland harmony.", "bestWatches": "Timex, Pierre Paulin salmon, Watchdives white, San Martin, Hruodland, Farasute.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Soft grained leather look, more relaxed than Butero.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/waxy-tobacco-leather-watch-strap", "sectionId": "tobacco-casual-warmth", "sectionRank": 3, "sectionTitle": "Tobacco casual warmth", "sectionSummary": "Casual warmth for bronze, cream, chocolate, salmon, and white dials without becoming rustic.", "pickRank": 1, "status": "Primary", "product": "Waxy Tobacco Leather Watch Strap", "url": "https://tunsstore.com/product/waxy-tobacco-leather-watch-strap", "image": "/images/tuns-method-2/WAXY-3-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/WAXY-3-scaled.webp", "priceUsd": 54.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Waxy Badalassi Strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for the Baltany bronze diver. Request brass/gold-toned buckle for bronze/gold cases.", "bestWatches": "Baltany bronze, Timex cream, Hruodland chocolate, Pierre Paulin salmon, Watchdives white.", "valueScore": 8.0, "qualityScore": 8.5, "note": "Adds American ease and bronze/gold warmth without going western or rustic.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/chromepak-horween-leather-watch-strap", "sectionId": "tobacco-casual-warmth", "sectionRank": 3, "sectionTitle": "Tobacco casual warmth", "sectionSummary": "Casual warmth for bronze, cream, chocolate, salmon, and white dials without becoming rustic.", "pickRank": 2, "status": "Alternative", "product": "Chromepak Horween Tobaco Leather Watch Strap", "url": "https://tunsstore.com/product/chromepak-horween-leather-watch-strap", "image": "/images/tuns-method-2/SAP-WAX-5.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2024/04/SAP-WAX-5.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Horween Watch Strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for the Baltany bronze diver. Request brass/gold-toned buckle for bronze/gold cases.", "bestWatches": "Baltany bronze, Timex cream, Hruodland chocolate, Pierre Paulin salmon, Watchdives white.", "valueScore": 8.5, "qualityScore": 8.0, "note": "Horween-family casual warmth at a lower price.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/vegtan-tan-brown-leather-watch-strap", "sectionId": "tobacco-casual-warmth", "sectionRank": 3, "sectionTitle": "Tobacco casual warmth", "sectionSummary": "Casual warmth for bronze, cream, chocolate, salmon, and white dials without becoming rustic.", "pickRank": 3, "status": "Alternative", "product": "Ostrich Tobaco Brown Leather Watch Strap", "url": "https://tunsstore.com/product/vegtan-tan-brown-leather-watch-strap", "image": "/images/tuns-method-2/DD-browm-dam.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/DD-browm-dam.webp", "priceUsd": 57.0, "rating": 4.94, "reviewCount": 17, "inStock": true, "category": "Ostrich Strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for the Baltany bronze diver. Request brass/gold-toned buckle for bronze/gold cases.", "bestWatches": "Baltany bronze, Timex cream, Hruodland chocolate, Pierre Paulin salmon, Watchdives white.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Quiet exotic texture; strong reviews, but more distinctive.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/museum-patina-brown-leather-watch-strap", "sectionId": "tobacco-casual-warmth", "sectionRank": 3, "sectionTitle": "Tobacco casual warmth", "sectionSummary": "Casual warmth for bronze, cream, chocolate, salmon, and white dials without becoming rustic.", "pickRank": 4, "status": "Alternative", "product": "Museum Patina Brown Leather Watch Strap", "url": "https://tunsstore.com/product/museum-patina-brown-leather-watch-strap", "image": "/images/tuns-method-2/MUSIUM-3-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/MUSIUM-3-scaled.webp", "priceUsd": 50.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Waxy Badalassi Strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for the Baltany bronze diver. Request brass/gold-toned buckle for bronze/gold cases.", "bestWatches": "Baltany bronze, Timex cream, Hruodland chocolate, Pierre Paulin salmon, Watchdives white.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Patina look with less orange than tobacco.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/pueblo-dark-navi-leather-watch-strap", "sectionId": "deep-navy-leather", "sectionRank": 4, "sectionTitle": "Deep navy leather", "sectionSummary": "Dark blue coordination for navy and blue dials, plus controlled contrast on black and white watches.", "pickRank": 1, "status": "Primary", "product": "Pueblo Dark Navy Leather Watch Strap", "url": "https://tunsstore.com/product/pueblo-dark-navi-leather-watch-strap", "image": "/images/tuns-method-2/MG_3475-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3475-scaled.webp", "priceUsd": 48.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Pueblo Strap", "colorKey": "navy", "colorName": "Navy Blue", "colorHex": "#000080", "hardware": "Silver hardware unless the watch case is bronze or gold.", "orderWidth": "20-18mm Slim for 20mm watches; 19-16mm for the Farasute navy if you want a dedicated same-tone strap.", "bestWatches": "Farasute navy, ADDIESDIVE blue chrono, Watchdives white, San Martin black MOP, BERNY green.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Lets the navy/blue dials stay elegant while softening black-and-white chronos.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/butero-navi-leather-watch-strap", "sectionId": "deep-navy-leather", "sectionRank": 4, "sectionTitle": "Deep navy leather", "sectionSummary": "Dark blue coordination for navy and blue dials, plus controlled contrast on black and white watches.", "pickRank": 2, "status": "Alternative", "product": "Butero Navy Leather Watch Strap", "url": "https://tunsstore.com/product/butero-navi-leather-watch-strap", "image": "/images/tuns-method-2/butero-3-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/butero-3-scaled.webp", "priceUsd": 52.0, "rating": 5.0, "reviewCount": 4, "inStock": true, "category": "Butero Strap", "colorKey": "navy", "colorName": "Navy Blue", "colorHex": "#000080", "hardware": "Silver hardware unless the watch case is bronze or gold.", "orderWidth": "20-18mm Slim for 20mm watches; 19-16mm for the Farasute navy if you want a dedicated same-tone strap.", "bestWatches": "Farasute navy, ADDIESDIVE blue chrono, Watchdives white, San Martin black MOP, BERNY green.", "valueScore": 8.0, "qualityScore": 8.5, "note": "Cleaner navy, a touch dressier than Pueblo.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/babele-navi-blue-watch-strap-3", "sectionId": "deep-navy-leather", "sectionRank": 4, "sectionTitle": "Deep navy leather", "sectionSummary": "Dark blue coordination for navy and blue dials, plus controlled contrast on black and white watches.", "pickRank": 3, "status": "Alternative", "product": "Babele Navy Blue Watch Strap", "url": "https://tunsstore.com/product/babele-navi-blue-watch-strap-3", "image": "/images/tuns-method-2/babele-21-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/babele-21-scaled.webp", "priceUsd": 47.0, "rating": 5.0, "reviewCount": 6, "inStock": true, "category": "", "colorKey": "navy", "colorName": "Navy Blue", "colorHex": "#000080", "hardware": "Silver hardware unless the watch case is bronze or gold.", "orderWidth": "20-18mm Slim for 20mm watches; 19-16mm for the Farasute navy if you want a dedicated same-tone strap.", "bestWatches": "Farasute navy, ADDIESDIVE blue chrono, Watchdives white, San Martin black MOP, BERNY green.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Grained navy texture for casual stainless watches.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/suede-navi-blue-leather-watch-strap", "sectionId": "deep-navy-leather", "sectionRank": 4, "sectionTitle": "Deep navy leather", "sectionSummary": "Dark blue coordination for navy and blue dials, plus controlled contrast on black and white watches.", "pickRank": 4, "status": "Alternative", "product": "Suede Navy Blue Leather Watch Strap", "url": "https://tunsstore.com/product/suede-navi-blue-leather-watch-strap", "image": "/images/tuns-method-2/MG_3413-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3413-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Suede Strap", "colorKey": "navy", "colorName": "Navy Blue", "colorHex": "#000080", "hardware": "Silver hardware unless the watch case is bronze or gold.", "orderWidth": "20-18mm Slim for 20mm watches; 19-16mm for the Farasute navy if you want a dedicated same-tone strap.", "bestWatches": "Farasute navy, ADDIESDIVE blue chrono, Watchdives white, San Martin black MOP, BERNY green.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Softer navy, especially good for summer and blue dials.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/suede-tan-leather-watch-strap", "sectionId": "tan-suede-casual-elegant", "sectionRank": 5, "sectionTitle": "Tan suede casual-elegant", "sectionSummary": "Soft relaxed neutral for white, cream, salmon, and summer-leaning casual outfits.", "pickRank": 1, "status": "Primary", "product": "Suede Tan Leather Watch Strap", "url": "https://tunsstore.com/product/suede-tan-leather-watch-strap", "image": "/images/tuns-method-2/IMG_1982-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1982-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 4, "inStock": true, "category": "Suede Strap", "colorKey": "tan", "colorName": "Tan", "colorHex": "#D2B48C", "hardware": "Silver for the 20mm steel pool; brass only when ordering for Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches. Consider 22-20mm for Baltany only when dressing it down.", "bestWatches": "Timex cream, Watchdives white, Pierre Paulin salmon, ADDIESDIVE blue, Baltany bronze casual days.", "valueScore": 8.0, "qualityScore": 7.5, "note": "A softer Riviera/old-money-casual strap for cream, white, and salmon dials.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/nubuck-smooth-tan-brown-watch-strap", "sectionId": "tan-suede-casual-elegant", "sectionRank": 5, "sectionTitle": "Tan suede casual-elegant", "sectionSummary": "Soft relaxed neutral for white, cream, salmon, and summer-leaning casual outfits.", "pickRank": 2, "status": "Alternative", "product": "Nubuck Tan Brown Watch Strap", "url": "https://tunsstore.com/product/nubuck-smooth-tan-brown-watch-strap", "image": "/images/tuns-method-2/NUBUCK-37-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/NUBUCK-37-scaled.webp", "priceUsd": 47.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Nubuck Strap", "colorKey": "tan", "colorName": "Tan", "colorHex": "#D2B48C", "hardware": "Silver for the 20mm steel pool; brass only when ordering for Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches. Consider 22-20mm for Baltany only when dressing it down.", "bestWatches": "Timex cream, Watchdives white, Pierre Paulin salmon, ADDIESDIVE blue, Baltany bronze casual days.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Casual nap with warmer brown undertone.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/suede-etaupe-leather-watch-strap", "sectionId": "tan-suede-casual-elegant", "sectionRank": 5, "sectionTitle": "Tan suede casual-elegant", "sectionSummary": "Soft relaxed neutral for white, cream, salmon, and summer-leaning casual outfits.", "pickRank": 3, "status": "Alternative", "product": "Suede Etaupe Leather Watch Strap", "url": "https://tunsstore.com/product/suede-etaupe-leather-watch-strap", "image": "/images/tuns-method-2/suede-14-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/05/suede-14-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Suede Strap", "colorKey": "taupe", "colorName": "Taupe", "colorHex": "#54463A", "hardware": "Silver on steel; gold-toned hardware only for narrow gold-case use.", "orderWidth": "20-18mm Slim for 20mm watches. Consider 22-20mm for Baltany only when dressing it down.", "bestWatches": "Timex cream, Watchdives white, Pierre Paulin salmon, ADDIESDIVE blue, Baltany bronze casual days.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Taupe suede is the most understated alternative.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/butero-tan-leather-watch-strap", "sectionId": "tan-suede-casual-elegant", "sectionRank": 5, "sectionTitle": "Tan suede casual-elegant", "sectionSummary": "Soft relaxed neutral for white, cream, salmon, and summer-leaning casual outfits.", "pickRank": 4, "status": "Alternative", "product": "Butero Tan Leather Watch Strap", "url": "https://tunsstore.com/product/butero-tan-leather-watch-strap", "image": "/images/tuns-method-2/MG_2954-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_2954-scaled.webp", "priceUsd": 47.0, "rating": 5.0, "reviewCount": 5, "inStock": true, "category": "Butero Strap", "colorKey": "tan", "colorName": "Tan", "colorHex": "#D2B48C", "hardware": "Silver for the 20mm steel pool; brass only when ordering for Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches. Consider 22-20mm for Baltany only when dressing it down.", "bestWatches": "Timex cream, Watchdives white, Pierre Paulin salmon, ADDIESDIVE blue, Baltany bronze casual days.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Leather version if suede feels too delicate.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/waxy-bordeaux-watch-strap", "sectionId": "bordeaux-oxblood-accent", "sectionRank": 6, "sectionTitle": "Bordeaux / oxblood accent", "sectionSummary": "A restrained color accent for burgundy, green, salmon, and black dials.", "pickRank": 1, "status": "Primary", "product": "Waxy Bordeaux Watch Strap", "url": "https://tunsstore.com/product/waxy-bordeaux-watch-strap", "image": "/images/tuns-method-2/waxy-43-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/04/waxy-43-scaled.webp", "priceUsd": 54.0, "rating": 5.0, "reviewCount": 12, "inStock": true, "category": "Waxy Badalassi Strap", "colorKey": "burgundy", "colorName": "Burgundy", "colorHex": "#800020", "hardware": "Keep hardware and stitching restrained; brass works on Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for Baltany. Keep stitching tonal.", "bestWatches": "Baltany burgundy bronze, BERNY green, Pierre Paulin salmon, Pierre Paulin sector, San Martin black.", "valueScore": 8.5, "qualityScore": 8.5, "note": "Gives the burgundy, green, black, and salmon dials depth without becoming loud.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/pueblo-burgundy-leather-watch-strap", "sectionId": "bordeaux-oxblood-accent", "sectionRank": 6, "sectionTitle": "Bordeaux / oxblood accent", "sectionSummary": "A restrained color accent for burgundy, green, salmon, and black dials.", "pickRank": 2, "status": "Alternative", "product": "Pueblo Burgundy Leather Watch Strap", "url": "https://tunsstore.com/product/pueblo-burgundy-leather-watch-strap", "image": "/images/tuns-method-2/MG_2996-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_2996-scaled.webp", "priceUsd": 48.0, "rating": 4.75, "reviewCount": 4, "inStock": true, "category": "Pueblo Strap", "colorKey": "burgundy", "colorName": "Burgundy", "colorHex": "#800020", "hardware": "Keep hardware and stitching restrained; brass works on Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for Baltany. Keep stitching tonal.", "bestWatches": "Baltany burgundy bronze, BERNY green, Pierre Paulin salmon, Pierre Paulin sector, San Martin black.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Matte burgundy; quieter than glossy oxblood.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/tuscany-bordeaux-leather-watch-strap-2", "sectionId": "bordeaux-oxblood-accent", "sectionRank": 6, "sectionTitle": "Bordeaux / oxblood accent", "sectionSummary": "A restrained color accent for burgundy, green, salmon, and black dials.", "pickRank": 3, "status": "Alternative", "product": "Tuscany Bordeaux Leather Watch Strap", "url": "https://tunsstore.com/product/tuscany-bordeaux-leather-watch-strap-2", "image": "/images/tuns-method-2/TUSCANY-28-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/TUSCANY-28-scaled.webp", "priceUsd": 54.0, "rating": 5.0, "reviewCount": 2, "inStock": true, "category": "Tuscany Leather Strap", "colorKey": "burgundy", "colorName": "Burgundy", "colorHex": "#800020", "hardware": "Keep hardware and stitching restrained; brass works on Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for Baltany. Keep stitching tonal.", "bestWatches": "Baltany burgundy bronze, BERNY green, Pierre Paulin salmon, Pierre Paulin sector, San Martin black.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Richer bordeaux with dress-casual polish.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/lizard-burgundy-leather-watch-strap", "sectionId": "bordeaux-oxblood-accent", "sectionRank": 6, "sectionTitle": "Bordeaux / oxblood accent", "sectionSummary": "A restrained color accent for burgundy, green, salmon, and black dials.", "pickRank": 4, "status": "Alternative", "product": "Lizard Burgundy Leather Watch Strap", "url": "https://tunsstore.com/product/lizard-burgundy-leather-watch-strap", "image": "/images/tuns-method-2/ky-da-54-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/05/ky-da-54-scaled.webp", "priceUsd": 55.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Lizard Strap", "colorKey": "burgundy", "colorName": "Burgundy", "colorHex": "#800020", "hardware": "Keep hardware and stitching restrained; brass works on Baltany bronze.", "orderWidth": "20-18mm Slim for 20mm watches; 22-20mm for Baltany. Keep stitching tonal.", "bestWatches": "Baltany burgundy bronze, BERNY green, Pierre Paulin salmon, Pierre Paulin sector, San Martin black.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Dressier burgundy texture; use sparingly.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/rally-butero-dark-brown-leather-watch-strap", "sectionId": "sport-rally-strap", "sectionRank": 7, "sectionTitle": "Sport rally strap", "sectionSummary": "Sport-specific slot for chronographs and the bronze diver when the watch should feel more purposeful.", "pickRank": 1, "status": "Primary", "product": "Rally Butero Dark Brown Leather Watch Strap", "url": "https://tunsstore.com/product/rally-butero-dark-brown-leather-watch-strap", "image": "/images/tuns-method-2/IMG_1305-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1305-scaled.webp", "priceUsd": 57.0, "rating": 5.0, "reviewCount": 2, "inStock": true, "category": "Butero Strap, Rally Strap", "colorKey": "dark_brown", "colorName": "Dark Brown", "colorHex": "#654321", "hardware": "Silver on steel; brass on bronze and gold cases.", "orderWidth": "20-18mm Rally for both chronographs; 22-20mm Rally for Baltany if you want the diver sportier.", "bestWatches": "Watchdives WD1860, ADDIESDIVE VK64, Baltany bronze diver, Timex Weekender.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Makes the chronographs and diver feel purposeful while staying vintage rather than loud.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/rally-butero-navi-blue-leather-watch-strap", "sectionId": "sport-rally-strap", "sectionRank": 7, "sectionTitle": "Sport rally strap", "sectionSummary": "Sport-specific slot for chronographs and the bronze diver when the watch should feel more purposeful.", "pickRank": 2, "status": "Alternative", "product": "Rally Butero Navy Blue Leather Watch Strap", "url": "https://tunsstore.com/product/rally-butero-navi-blue-leather-watch-strap", "image": "/images/tuns-method-2/IMG_1858-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1858-scaled.webp", "priceUsd": 55.0, "rating": 5.0, "reviewCount": 4, "inStock": true, "category": "Butero Strap, Rally Strap", "colorKey": "navy", "colorName": "Navy Blue", "colorHex": "#000080", "hardware": "Silver hardware unless the watch case is bronze or gold.", "orderWidth": "20-18mm Rally for both chronographs; 22-20mm Rally for Baltany if you want the diver sportier.", "bestWatches": "Watchdives WD1860, ADDIESDIVE VK64, Baltany bronze diver, Timex Weekender.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Best rally alternative for blue/white chronos.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/tuscany-bordeaux-leather-watch-strap", "sectionId": "sport-rally-strap", "sectionRank": 7, "sectionTitle": "Sport rally strap", "sectionSummary": "Sport-specific slot for chronographs and the bronze diver when the watch should feel more purposeful.", "pickRank": 3, "status": "Alternative", "product": "Tuscany Bordeaux Leather Watch Strap", "url": "https://tunsstore.com/product/tuscany-bordeaux-leather-watch-strap", "image": "/images/tuns-method-2/TUSCANY-13-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/TUSCANY-13-scaled.webp", "priceUsd": 54.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Rally Strap, Tuscany Leather Strap", "colorKey": "burgundy", "colorName": "Burgundy", "colorHex": "#800020", "hardware": "Keep hardware and stitching restrained; brass works on Baltany bronze.", "orderWidth": "20-18mm Rally for both chronographs; 22-20mm Rally for Baltany if you want the diver sportier.", "bestWatches": "Watchdives WD1860, ADDIESDIVE VK64, Baltany bronze diver, Timex Weekender.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Bordeaux rally option for the Baltany or black chrono.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/rally-maya-pine-green-leather-watch-strap", "sectionId": "sport-rally-strap", "sectionRank": 7, "sectionTitle": "Sport rally strap", "sectionSummary": "Sport-specific slot for chronographs and the bronze diver when the watch should feel more purposeful.", "pickRank": 4, "status": "Alternative", "product": "Rally Maya Pine Green Leather Watch Strap", "url": "https://tunsstore.com/product/rally-maya-pine-green-leather-watch-strap", "image": "/images/tuns-method-2/IMG_1839-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1839-scaled.webp", "priceUsd": 50.0, "rating": 5.0, "reviewCount": 5, "inStock": true, "category": "Maya Leather Strap, Rally Strap", "colorKey": "olive", "colorName": "Olive Green", "colorHex": "#636B2F", "hardware": "Silver hardware and tonal stitching keep the field look restrained.", "orderWidth": "20-18mm Rally for both chronographs; 22-20mm Rally for Baltany if you want the diver sportier.", "bestWatches": "Watchdives WD1860, ADDIESDIVE VK64, Baltany bronze diver, Timex Weekender.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Sportier green rally; use with field/casual outfits.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/pueblo-olive-green-leather-watch-strap", "sectionId": "olive-field-texture", "sectionRank": 8, "sectionTitle": "Olive field texture", "sectionSummary": "Field and utility texture that still works with steel, green, cream, and blue.", "pickRank": 1, "status": "Primary", "product": "Pueblo Olive Green Leather Watch Strap", "url": "https://tunsstore.com/product/pueblo-olive-green-leather-watch-strap", "image": "/images/tuns-method-2/MG_3444-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3444-scaled.webp", "priceUsd": 48.0, "rating": 5.0, "reviewCount": 4, "inStock": true, "category": "Pueblo Strap", "colorKey": "olive", "colorName": "Olive Green", "colorHex": "#636B2F", "hardware": "Silver hardware and tonal stitching keep the field look restrained.", "orderWidth": "20-18mm Slim for the 20mm group. Avoid contrast stitching; keep it tonal.", "bestWatches": "Timex, BERNY green, Watchdives white, ADDIESDIVE blue, San Martin black.", "valueScore": 8.0, "qualityScore": 8.0, "note": "Adds a restrained field/utility note that works with steel, green, cream, and blue.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/nubuck-olive-green-watch-strap", "sectionId": "olive-field-texture", "sectionRank": 8, "sectionTitle": "Olive field texture", "sectionSummary": "Field and utility texture that still works with steel, green, cream, and blue.", "pickRank": 2, "status": "Alternative", "product": "Nubuck Olive Green Watch Strap", "url": "https://tunsstore.com/product/nubuck-olive-green-watch-strap", "image": "/images/tuns-method-2/NUBUCK-57-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2023/07/NUBUCK-57-scaled.webp", "priceUsd": 45.0, "rating": 0.0, "reviewCount": 0, "inStock": true, "category": "Nubuck Strap", "colorKey": "olive", "colorName": "Olive Green", "colorHex": "#636B2F", "hardware": "Silver hardware and tonal stitching keep the field look restrained.", "orderWidth": "20-18mm Slim for the 20mm group. Avoid contrast stitching; keep it tonal.", "bestWatches": "Timex, BERNY green, Watchdives white, ADDIESDIVE blue, San Martin black.", "valueScore": 7.5, "qualityScore": 7.0, "note": "Lowest-key olive; no store reviews yet, so evidence is thinner.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/butero-olive-green-leather-watch-strap-2", "sectionId": "olive-field-texture", "sectionRank": 8, "sectionTitle": "Olive field texture", "sectionSummary": "Field and utility texture that still works with steel, green, cream, and blue.", "pickRank": 3, "status": "Alternative", "product": "Butero Olive Green Leather Watch Strap", "url": "https://tunsstore.com/product/butero-olive-green-leather-watch-strap-2", "image": "/images/tuns-method-2/IMG_1717-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/IMG_1717-scaled.webp", "priceUsd": 52.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Butero Strap", "colorKey": "olive", "colorName": "Olive Green", "colorHex": "#636B2F", "hardware": "Silver hardware and tonal stitching keep the field look restrained.", "orderWidth": "20-18mm Slim for the 20mm group. Avoid contrast stitching; keep it tonal.", "bestWatches": "Timex, BERNY green, Watchdives white, ADDIESDIVE blue, San Martin black.", "valueScore": 8.0, "qualityScore": 8.5, "note": "More polished olive with better review support.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/epsom-dark-green-leather-watch-strap", "sectionId": "olive-field-texture", "sectionRank": 8, "sectionTitle": "Olive field texture", "sectionSummary": "Field and utility texture that still works with steel, green, cream, and blue.", "pickRank": 4, "status": "Alternative", "product": "Epsom Dark Green Leather Watch Strap", "url": "https://tunsstore.com/product/epsom-dark-green-leather-watch-strap", "image": "/images/tuns-method-2/day-DH-handmade-41-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/day-DH-handmade-41-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Epsom Strap", "colorKey": "olive", "colorName": "Olive Green", "colorHex": "#636B2F", "hardware": "Silver hardware and tonal stitching keep the field look restrained.", "orderWidth": "20-18mm Slim for the 20mm group. Avoid contrast stitching; keep it tonal.", "bestWatches": "Timex, BERNY green, Watchdives white, ADDIESDIVE blue, San Martin black.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Cleaner dark green dress-casual option.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": false}, {"id": "https://tunsstore.com/product/nubuck-grey-watch-strap", "sectionId": "grey-nubuck-bridge", "sectionRank": 9, "sectionTitle": "Grey nubuck bridge", "sectionSummary": "Cool neutral bridge for navy, black, chocolate, white, and MOP dials.", "pickRank": 1, "status": "Primary", "product": "Nubuck Grey Watch Strap", "url": "https://tunsstore.com/product/nubuck-grey-watch-strap", "image": "/images/tuns-method-2/nubuck-8-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/07/nubuck-8-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 5, "inStock": true, "category": "Nubuck Strap", "colorKey": "gray", "colorName": "Gray", "colorHex": "#808080", "hardware": "Silver hardware is the clean default for this cool neutral lane.", "orderWidth": "20-18mm Slim for the 20mm group; 19-16mm for Farasute; 18-16mm for Hruodland.", "bestWatches": "Farasute navy, Hruodland chocolate, San Martin black, Watchdives white, I&W steel rectangle.", "valueScore": 8.0, "qualityScore": 7.5, "note": "A quiet neutral for navy, black, chocolate, white, and MOP dials when brown feels too warm.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/waxy-steel-gray-watch-strap", "sectionId": "grey-nubuck-bridge", "sectionRank": 9, "sectionTitle": "Grey nubuck bridge", "sectionSummary": "Cool neutral bridge for navy, black, chocolate, white, and MOP dials.", "pickRank": 2, "status": "Alternative", "product": "Waxy Steel Gray Watch Strap", "url": "https://tunsstore.com/product/waxy-steel-gray-watch-strap", "image": "/images/tuns-method-2/waxy-38-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/04/waxy-38-scaled.webp", "priceUsd": 54.0, "rating": 4.67, "reviewCount": 3, "inStock": true, "category": "Waxy Badalassi Strap", "colorKey": "gray", "colorName": "Gray", "colorHex": "#808080", "hardware": "Silver hardware is the clean default for this cool neutral lane.", "orderWidth": "20-18mm Slim for the 20mm group; 19-16mm for Farasute; 18-16mm for Hruodland.", "bestWatches": "Farasute navy, Hruodland chocolate, San Martin black, Watchdives white, I&W steel rectangle.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Cooler gray with waxy depth.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/slim-saffiano-gray-leather-watch-strap", "sectionId": "grey-nubuck-bridge", "sectionRank": 9, "sectionTitle": "Grey nubuck bridge", "sectionSummary": "Cool neutral bridge for navy, black, chocolate, white, and MOP dials.", "pickRank": 3, "status": "Alternative", "product": "Slim Saffiano Gray Leather Watch Strap", "url": "https://tunsstore.com/product/slim-saffiano-gray-leather-watch-strap", "image": "/images/tuns-method-2/saffiano-12-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/04/saffiano-12-scaled.webp", "priceUsd": 45.0, "rating": 5.0, "reviewCount": 3, "inStock": true, "category": "Epsom Strap", "colorKey": "gray", "colorName": "Gray", "colorHex": "#808080", "hardware": "Silver hardware is the clean default for this cool neutral lane.", "orderWidth": "20-18mm Slim for the 20mm group; 19-16mm for Farasute; 18-16mm for Hruodland.", "bestWatches": "Farasute navy, Hruodland chocolate, San Martin black, Watchdives white, I&W steel rectangle.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Cleaner gray for dressier stainless watches.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/pueblo-grey-leather-watch-strap", "sectionId": "grey-nubuck-bridge", "sectionRank": 9, "sectionTitle": "Grey nubuck bridge", "sectionSummary": "Cool neutral bridge for navy, black, chocolate, white, and MOP dials.", "pickRank": 4, "status": "Alternative", "product": "Pueblo Grey Leather Watch Strap", "url": "https://tunsstore.com/product/pueblo-grey-leather-watch-strap", "image": "/images/tuns-method-2/MG_3050-scaled.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2022/02/MG_3050-scaled.webp", "priceUsd": 48.0, "rating": 3.67, "reviewCount": 3, "inStock": true, "category": "Pueblo Strap", "colorKey": "gray", "colorName": "Gray", "colorHex": "#808080", "hardware": "Silver hardware is the clean default for this cool neutral lane.", "orderWidth": "20-18mm Slim for the 20mm group; 19-16mm for Farasute; 18-16mm for Hruodland.", "bestWatches": "Farasute navy, Hruodland chocolate, San Martin black, Watchdives white, I&W steel rectangle.", "valueScore": 6.5, "qualityScore": 7.0, "note": "More rustic gray; rating evidence is weaker.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/brown-alligator-leather-cartier-watch-strap", "sectionId": "narrow-rectangular-dress-strap", "sectionRank": 10, "sectionTitle": "Narrow rectangular dress strap", "sectionSummary": "Dedicated narrow lane for Seiko SWR107 and I&W rectangle watches.", "pickRank": 1, "status": "Primary", "product": "Brown Alligator Leather Cartier Watch Strap", "url": "https://tunsstore.com/product/brown-alligator-leather-cartier-watch-strap", "image": "/images/tuns-method-2/alli-carti-44.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2024/04/alli-carti-44.webp", "priceUsd": 61.0, "rating": 0.0, "reviewCount": 0, "inStock": true, "category": "Alligator Strap, Cartier watch strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "I&W: 16-14mm. Seiko SWR107: use Lugs custom for 15mm, likely tapering to 12-14mm; request gold-toned hardware or no clasp if reusing Seiko hardware.", "bestWatches": "Seiko SWR107 white/gold, I&W white MOP stainless rectangle.", "valueScore": 7.5, "qualityScore": 8.0, "note": "A dedicated elegant lane for the gold Seiko and the slim I&W without forcing 20mm proportions.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/black-alligator-leather-cartier-watch-strap", "sectionId": "narrow-rectangular-dress-strap", "sectionRank": 10, "sectionTitle": "Narrow rectangular dress strap", "sectionSummary": "Dedicated narrow lane for Seiko SWR107 and I&W rectangle watches.", "pickRank": 2, "status": "Alternative", "product": "Black Alligator Leather Cartier Watch Strap", "url": "https://tunsstore.com/product/black-alligator-leather-cartier-watch-strap", "image": "/images/tuns-method-2/alli-carti-39.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2024/04/alli-carti-39.webp", "priceUsd": 61.0, "rating": 0.0, "reviewCount": 0, "inStock": true, "category": "Alligator Strap, Cartier watch strap", "colorKey": "black", "colorName": "Black", "colorHex": "#000000", "hardware": "Silver hardware for steel; gold or brass only when used on the gold Seiko.", "orderWidth": "I&W: 16-14mm. Seiko SWR107: use Lugs custom for 15mm, likely tapering to 12-14mm; request gold-toned hardware or no clasp if reusing Seiko hardware.", "bestWatches": "Seiko SWR107 white/gold, I&W white MOP stainless rectangle.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Most formal narrow strap; best for I&W stainless.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/cartier-togo-etaupe-leather-watch-strap", "sectionId": "narrow-rectangular-dress-strap", "sectionRank": 10, "sectionTitle": "Narrow rectangular dress strap", "sectionSummary": "Dedicated narrow lane for Seiko SWR107 and I&W rectangle watches.", "pickRank": 3, "status": "Alternative", "product": "Cartier Togo Etaupe Leather Watch Strap", "url": "https://tunsstore.com/product/cartier-togo-etaupe-leather-watch-strap", "image": "/images/tuns-method-2/togo-carti-3.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2024/04/togo-carti-3.webp", "priceUsd": 50.0, "rating": 0.0, "reviewCount": 0, "inStock": true, "category": "Cartier watch strap, Togo watch strap", "colorKey": "taupe", "colorName": "Taupe", "colorHex": "#54463A", "hardware": "Silver on steel; gold-toned hardware only for narrow gold-case use.", "orderWidth": "I&W: 16-14mm. Seiko SWR107: use Lugs custom for 15mm, likely tapering to 12-14mm; request gold-toned hardware or no clasp if reusing Seiko hardware.", "bestWatches": "Seiko SWR107 white/gold, I&W white MOP stainless rectangle.", "valueScore": 8.0, "qualityScore": 7.5, "note": "Taupe Togo is the quietest rectangle alternative.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}, {"id": "https://tunsstore.com/product/conag-alligator-leather-cartier-watch-strap", "sectionId": "narrow-rectangular-dress-strap", "sectionRank": 10, "sectionTitle": "Narrow rectangular dress strap", "sectionSummary": "Dedicated narrow lane for Seiko SWR107 and I&W rectangle watches.", "pickRank": 4, "status": "Alternative", "product": "Conag Patina Alligator France Leather Cartier Watch Strap", "url": "https://tunsstore.com/product/conag-alligator-leather-cartier-watch-strap", "image": "/images/tuns-method-2/alli-carti-28.webp", "sourceImage": "https://admin.tunsstore.com/wp-content/uploads/2024/04/alli-carti-28.webp", "priceUsd": 62.0, "rating": 5.0, "reviewCount": 1, "inStock": true, "category": "Alligator Strap, Cartier watch strap", "colorKey": "brown", "colorName": "Brown", "colorHex": "#895129", "hardware": "Silver on steel; brass or gold-toned hardware for bronze and gold cases.", "orderWidth": "I&W: 16-14mm. Seiko SWR107: use Lugs custom for 15mm, likely tapering to 12-14mm; request gold-toned hardware or no clasp if reusing Seiko hardware.", "bestWatches": "Seiko SWR107 white/gold, I&W white MOP stainless rectangle.", "valueScore": 7.5, "qualityScore": 8.0, "note": "Cognac-patina tone for the Seiko gold case.", "sourceNote": "TUNS product page/API: in stock, current price, images, width/style options, store rating.", "redditNote": "Reddit: insufficient product-specific owner data; TUNS appears mostly in resale/listing contexts, so treat store reviews/specs as primary. Astroturf risk 3/10; confidence low.", "isNarrow": true}];
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function money(value) {
+      return Number.isFinite(value) ? "$" + value : "N/A";
+    }
+
+    function ratingText(item) {
+      if (!item.reviewCount) return "No store reviews yet";
+      return item.rating.toFixed(2) + "/5 from " + item.reviewCount + " reviews";
+    }
+
+    function targetShade(item) {
+      return `<span class="target-shade"><span class="shade-swatch" style="background:${escapeHtml(item.colorHex)}"></span><span>${escapeHtml(item.colorName)}</span><span class="shade-hex">${escapeHtml(item.colorHex)}</span></span>`;
+    }
+
+    const sections = [...straps.reduce((map, item) => {
+      if (!map.has(item.sectionId)) {
+        map.set(item.sectionId, {
+          id: item.sectionId,
+          rank: item.sectionRank,
+          title: item.sectionTitle,
+          summary: item.sectionSummary,
+          items: []
+        });
+      }
+      map.get(item.sectionId).items.push(item);
+      return map;
+    }, new Map()).values()].sort((a, b) => a.rank - b.rank);
+
+    const navList = document.getElementById("nav-list");
+    const sectionsRoot = document.getElementById("sections");
+    const lightboxIndex = [];
+    const favKey = (item) => item.id;
+
+    function cardButton(label, url, primary = false) {
+      return `<a class="button${primary ? "" : " secondary"}" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a>`;
+    }
+
+    sections.forEach((section) => {
+      navList.insertAdjacentHTML("beforeend", `<a class="nav-link" href="#${escapeHtml(section.id)}" data-section="${escapeHtml(section.id)}"><strong>${section.rank}</strong><span>${escapeHtml(section.title)}</span></a>`);
+
+      const cards = section.items.map((item) => {
+        const lbId = lightboxIndex.length;
+        lightboxIndex.push({
+          id: favKey(item),
+          image: item.image,
+          title: item.product,
+          section: item.sectionTitle,
+          status: item.status,
+          url: item.url,
+          rank: item.pickRank,
+          colorName: item.colorName
+        });
+        const statusClass = item.status.toLowerCase() === "primary" ? " primary" : "";
+        return `<article class="strap-card" data-section="${escapeHtml(section.id)}" data-id="${escapeHtml(favKey(item))}" data-status="${escapeHtml(item.status.toLowerCase())}" data-narrow="${item.isNarrow ? "true" : "false"}">
+          <div class="strap-media" data-lb="${lbId}" role="button" tabindex="0" aria-label="Expand ${escapeHtml(item.product)}">
+            <span class="badge">M2-${section.rank}.${item.pickRank}</span>
+            <button class="favorite-btn" type="button" data-fav-id="${escapeHtml(favKey(item))}" aria-label="Toggle shortlist">Save</button>
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.product)}" loading="lazy" />
+            <span class="zoom-hint">Preview</span>
+          </div>
+          <div class="strap-copy">
+            <div>
+              <div class="strap-tier${statusClass}">${escapeHtml(item.status)}</div>
+              <h3 class="strap-title">${escapeHtml(item.product)}</h3>
+            </div>
+            <div class="score-grid">
+              <div><span class="shade-label">Price</span><strong>${money(item.priceUsd)}</strong></div>
+              <div><span class="shade-label">Value</span><strong>${item.valueScore}/10</strong></div>
+              <div><span class="shade-label">Quality</span><strong>${item.qualityScore}/10</strong></div>
+            </div>
+            <div class="shade-block">
+              <div class="shade-line"><span class="shade-label">Color Target</span>${targetShade(item)}</div>
+              <div class="shade-line"><span class="shade-label">Width / Order Note</span>${escapeHtml(item.orderWidth)}</div>
+              <div class="shade-line"><span class="shade-label">Best Watches</span>${escapeHtml(item.bestWatches)}</div>
+              <div class="shade-line"><span class="shade-label">Why It Is Here</span>${escapeHtml(item.note)}</div>
+              <div class="shade-line"><span class="shade-label">Store Evidence</span>${escapeHtml(ratingText(item))}; ${item.inStock ? "in stock" : "stock unclear"}. ${escapeHtml(item.category || "")}</div>
+            </div>
+            <div class="strap-actions">
+              ${cardButton("Open Listing", item.url, true)}
+              ${cardButton("Open Image", item.image)}
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+
+      sectionsRoot.insertAdjacentHTML("beforeend", `<section class="panel" id="${escapeHtml(section.id)}" data-section-id="${escapeHtml(section.id)}">
+        <div class="section-head">
+          <div>
+            <div class="section-rank"><strong>${section.rank}</strong> Wardrobe Slot</div>
+            <h2>${escapeHtml(section.title)}</h2>
+            <p>${escapeHtml(section.summary)}</p>
+          </div>
+          <div class="role-note">Compare the primary against its three alternatives before deciding what belongs in the final method 2 pool.</div>
+        </div>
+        <div class="strap-grid">${cards}</div>
+        <div class="empty-state">No straps in this method 2 slot match the current filter.</div>
+      </section>`);
+    });
+
+    const BRIEF_KEY = "tuns-v2-brief-acknowledged";
+    const STORAGE_KEY = "tuns-shortlist-v2";
+    const briefPanel = document.getElementById("wardrobe-brief");
+    const briefStatus = document.getElementById("brief-status");
+    const briefCheckbox = document.getElementById("brief-read-checkbox");
+    const briefButton = document.getElementById("brief-acknowledge");
+    const shortlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+
+    function syncBriefState() {
+      const acknowledged = localStorage.getItem(BRIEF_KEY) === "true";
+      briefPanel.classList.toggle("is-acknowledged", acknowledged);
+      briefCheckbox.checked = acknowledged;
+      briefButton.disabled = !briefCheckbox.checked || acknowledged;
+      briefStatus.textContent = acknowledged ? "Brief acknowledged" : "Acknowledgment required";
+      briefButton.textContent = acknowledged ? "Acknowledged" : "Acknowledge Brief";
+    }
+
+    briefCheckbox.addEventListener("change", () => {
+      const acknowledged = localStorage.getItem(BRIEF_KEY) === "true";
+      briefButton.disabled = !briefCheckbox.checked || acknowledged;
+    });
+
+    briefButton.addEventListener("click", () => {
+      if (!briefCheckbox.checked) return;
+      localStorage.setItem(BRIEF_KEY, "true");
+      syncBriefState();
+    });
+
+    function hiddenStrapIds() {
+      return new Set(window.__deckBridgeState?.hiddenStrapIds || []);
+    }
+
+    function isAdminHiddenId(id) {
+      return hiddenStrapIds().has(id);
+    }
+
+    function isAdminHiddenCard(card) {
+      return isAdminHiddenId(card.dataset.id);
+    }
+
+    function pruneHiddenShortlist() {
+      let changed = false;
+      hiddenStrapIds().forEach((id) => {
+        if (shortlist.delete(id)) changed = true;
+      });
+      if (changed) persistShortlist();
+    }
+
+    function persistShortlist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...shortlist]));
+    }
+
+    function syncFavState() {
+      pruneHiddenShortlist();
+      document.querySelectorAll(".strap-card").forEach((card) => {
+        const on = shortlist.has(card.dataset.id);
+        card.classList.toggle("favorited", on);
+        const btn = card.querySelector(".favorite-btn");
+        if (btn) {
+          btn.classList.toggle("active", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+      });
+      const countEl = document.getElementById("count-shortlist");
+      if (countEl) countEl.textContent = shortlist.size;
+      syncLightboxFav();
+    }
+
+    function toggleFavorite(id) {
+      if (isAdminHiddenId(id)) return;
+      if (shortlist.has(id)) shortlist.delete(id);
+      else shortlist.add(id);
+      persistShortlist();
+      syncFavState();
+      applyFilter();
+    }
+
+    document.addEventListener("click", (event) => {
+      const favBtn = event.target.closest(".favorite-btn");
+      if (favBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFavorite(favBtn.dataset.favId);
+      }
+    });
+
+    document.getElementById("clear-shortlist").addEventListener("click", () => {
+      if (!shortlist.size) return;
+      if (confirm("Clear all shortlisted method 2 straps?")) {
+        shortlist.clear();
+        persistShortlist();
+        syncFavState();
+        applyFilter();
+      }
+    });
+
+    let currentFilter = "all";
+    const chips = document.querySelectorAll(".toolbar .chip[data-filter]");
+
+    function matchesFilter(card) {
+      if (isAdminHiddenCard(card)) return false;
+      if (currentFilter === "all") return true;
+      if (currentFilter === "primary") return card.dataset.status === "primary";
+      if (currentFilter === "alternative") return card.dataset.status === "alternative";
+      if (currentFilter === "narrow") return card.dataset.narrow === "true";
+      if (currentFilter === "shortlist") return shortlist.has(card.dataset.id);
+      return true;
+    }
+
+    function applyFilter() {
+      document.querySelectorAll(".strap-card").forEach((card) => {
+        const adminHidden = isAdminHiddenCard(card);
+        card.classList.toggle("admin-hidden", adminHidden);
+        card.classList.toggle("hidden", !adminHidden && !matchesFilter(card));
+      });
+      document.querySelectorAll("#sections .panel").forEach((panel) => {
+        const visible = panel.querySelectorAll(".strap-card:not(.hidden):not(.admin-hidden)").length;
+        panel.classList.toggle("is-empty", visible === 0);
+      });
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const cards = document.querySelectorAll(".strap-card");
+      let all = 0, primary = 0, alternative = 0, narrow = 0, slist = 0;
+      cards.forEach((card) => {
+        if (isAdminHiddenCard(card)) return;
+        all++;
+        if (card.dataset.status === "primary") primary++;
+        if (card.dataset.status === "alternative") alternative++;
+        if (card.dataset.narrow === "true") narrow++;
+        if (shortlist.has(card.dataset.id)) slist++;
+      });
+      document.getElementById("count-all").textContent = all;
+      document.getElementById("count-primary").textContent = primary;
+      document.getElementById("count-alternative").textContent = alternative;
+      document.getElementById("count-narrow").textContent = narrow;
+      document.getElementById("count-shortlist").textContent = slist;
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        chips.forEach((candidate) => {
+          candidate.classList.remove("active");
+          candidate.setAttribute("aria-checked", "false");
+        });
+        chip.classList.add("active");
+        chip.setAttribute("aria-checked", "true");
+        currentFilter = chip.dataset.filter;
+        applyFilter();
+      });
+    });
+
+    const lightbox = document.getElementById("lightbox");
+    const lbImage = document.getElementById("lightbox-image");
+    const lbCounter = document.getElementById("lightbox-counter");
+    const lbCaption = document.getElementById("lightbox-caption");
+    const lbCaptionTitle = lbCaption.querySelector("strong");
+    const lbCaptionMeta = lbCaption.querySelector("span");
+    const lbCaptionLink = lbCaption.querySelector("a");
+    const lbFav = document.getElementById("lightbox-fav");
+    const lbFavIcon = document.getElementById("lightbox-fav-icon");
+    const lbFavLabel = document.getElementById("lightbox-fav-label");
+    let lbCursor = 0;
+    let lbVisible = [];
+    let cleanupLightboxViewport = null;
+    let parentScrollLock = null;
+
+    function buildVisibleList() {
+      lbVisible = [...document.querySelectorAll(".strap-card:not(.hidden):not(.admin-hidden)")]
+        .map((card) => lightboxIndex[Number(card.querySelector(".strap-media").dataset.lb)]);
+    }
+
+    function embeddedViewportState() {
+      try {
+        if (window.parent === window || !window.frameElement) return null;
+        const frameRect = window.frameElement.getBoundingClientRect();
+        const parentHeight = window.parent.innerHeight || document.documentElement.clientHeight;
+        return {
+          height: Math.max(320, parentHeight),
+          top: Math.max(0, -frameRect.top)
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    function syncLightboxViewport() {
+      const viewport = embeddedViewportState();
+      if (!viewport) {
+        lightbox.classList.remove("embedded");
+        lightbox.style.top = "";
+        lightbox.style.height = "";
+        lightbox.style.bottom = "";
+        lightbox.style.removeProperty("--embedded-lightbox-image-max-height");
+        return;
+      }
+
+      lightbox.classList.add("embedded");
+      lightbox.style.top = viewport.top + "px";
+      lightbox.style.height = viewport.height + "px";
+      lightbox.style.bottom = "auto";
+      lightbox.style.setProperty("--embedded-lightbox-image-max-height", Math.floor(viewport.height * 0.76) + "px");
+    }
+
+    function lockParentScroll() {
+      try {
+        if (window.parent === window) return null;
+        const parentDoc = window.parent.document;
+        const root = parentDoc.documentElement;
+        const body = parentDoc.body;
+        const previousRoot = root.style.overflow;
+        const previousBody = body.style.overflow;
+        root.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+        return () => {
+          root.style.overflow = previousRoot;
+          body.style.overflow = previousBody;
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    function startLightboxViewportSync() {
+      syncLightboxViewport();
+      parentScrollLock = lockParentScroll();
+
+      try {
+        if (window.parent === window) return;
+        window.parent.addEventListener("resize", syncLightboxViewport);
+        window.parent.addEventListener("scroll", syncLightboxViewport, { passive: true });
+        cleanupLightboxViewport = () => {
+          window.parent.removeEventListener("resize", syncLightboxViewport);
+          window.parent.removeEventListener("scroll", syncLightboxViewport);
+        };
+      } catch {
+        cleanupLightboxViewport = null;
+      }
+    }
+
+    function stopLightboxViewportSync() {
+      cleanupLightboxViewport?.();
+      cleanupLightboxViewport = null;
+      parentScrollLock?.();
+      parentScrollLock = null;
+      lightbox.classList.remove("embedded");
+      lightbox.style.top = "";
+      lightbox.style.height = "";
+      lightbox.style.bottom = "";
+      lightbox.style.removeProperty("--embedded-lightbox-image-max-height");
+    }
+
+    function openLightbox(lbId) {
+      buildVisibleList();
+      const targetId = lightboxIndex[lbId].id;
+      const idx = lbVisible.findIndex((item) => item.id === targetId);
+      lbCursor = idx >= 0 ? idx : 0;
+      if (!lbVisible.length) lbVisible = [lightboxIndex[lbId]];
+      startLightboxViewportSync();
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      renderLightbox();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      stopLightboxViewportSync();
+    }
+
+    function renderLightbox() {
+      const item = lbVisible[lbCursor];
+      if (!item) return closeLightbox();
+      lbImage.src = item.image;
+      lbImage.alt = item.title;
+      lbCaptionTitle.textContent = item.title;
+      lbCaptionMeta.textContent = item.section + " - " + item.status + " - Pick #" + item.rank + " - " + item.colorName;
+      lbCaptionLink.href = item.url;
+      lbCaptionLink.dataset.strapId = item.id;
+      lbCounter.textContent = (lbCursor + 1) + " / " + lbVisible.length;
+      syncLightboxFav();
+    }
+
+    function syncLightboxFav() {
+      if (!lightbox.classList.contains("open")) return;
+      const item = lbVisible[lbCursor];
+      if (!item) return;
+      const on = shortlist.has(item.id);
+      lbFav.classList.toggle("active", on);
+      lbFavIcon.textContent = on ? "Saved" : "+";
+      lbFavLabel.textContent = on ? "Saved" : "Save";
+    }
+
+    function lbStep(delta) {
+      if (!lbVisible.length) return;
+      lbCursor = (lbCursor + delta + lbVisible.length) % lbVisible.length;
+      renderLightbox();
+    }
+
+    document.addEventListener("click", (event) => {
+      const media = event.target.closest(".strap-media");
+      if (media && !event.target.closest(".favorite-btn")) {
+        event.preventDefault();
+        openLightbox(Number(media.dataset.lb));
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const media = event.target.closest && event.target.closest(".strap-media");
+      if (media && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        openLightbox(Number(media.dataset.lb));
+        return;
+      }
+      if (!lightbox.classList.contains("open")) return;
+      if (event.key === "Escape") closeLightbox();
+      else if (event.key === "ArrowRight") lbStep(1);
+      else if (event.key === "ArrowLeft") lbStep(-1);
+    });
+
+    document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+    document.getElementById("lightbox-prev").addEventListener("click", () => lbStep(-1));
+    document.getElementById("lightbox-next").addEventListener("click", () => lbStep(1));
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox || event.target.classList.contains("lightbox-stage")) closeLightbox();
+    });
+    lbFav.addEventListener("click", () => {
+      const item = lbVisible[lbCursor];
+      if (item) toggleFavorite(item.id);
+    });
+
+    const navLinks = [...document.querySelectorAll(".nav-link[data-section]")];
+    const navById = Object.fromEntries(navLinks.map((link) => [link.dataset.section, link]));
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => link.classList.remove("active"));
+          navById[entry.target.id]?.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-35% 0px -55% 0px", threshold: 0 });
+    document.querySelectorAll("#sections .panel").forEach((panel) => spy.observe(panel));
+
+    window.addEventListener("deck:bridge-state", () => {
+      pruneHiddenShortlist();
+      syncFavState();
+      applyFilter();
+      if (lightbox.classList.contains("open")) {
+        buildVisibleList();
+        renderLightbox();
+      }
+    });
+
+    syncBriefState();
+    syncFavState();
+    applyFilter();
+  </script>
+  <script src="/deck-feedback.js"></script>
+</body>
+</html>

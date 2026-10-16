@@ -114,9 +114,10 @@
 
     .hero-meta {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
       margin-top: 28px;
+      max-width: 520px;
     }
 
     .meta-card {
@@ -346,6 +347,65 @@
       max-width: 980px;
     }
 
+    .intro-panel {
+      display: grid;
+      gap: 10px;
+    }
+
+    .intro-panel p {
+      max-width: 860px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .collapsible-panel {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .panel-summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 28px;
+    }
+
+    .panel-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .panel-summary h2 {
+      margin: 0;
+    }
+
+    .summary-toggle {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(45, 62, 83, 0.08);
+      color: var(--accent);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .collapsible-panel[open] .summary-toggle {
+      transform: rotate(180deg);
+      background: rgba(45, 62, 83, 0.14);
+    }
+
+    .collapsible-content {
+      padding: 0 28px 28px;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -439,83 +499,6 @@
       text-transform: uppercase;
     }
 
-    .family-target {
-      margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(45, 62, 83, 0.06);
-      border: 1px solid rgba(49, 44, 38, 0.08);
-      color: var(--muted);
-      font-size: 0.96rem;
-      line-height: 1.5;
-      max-width: 980px;
-    }
-
-    .family-target strong {
-      color: var(--ink);
-      font-family: "Avenir Next", "Segoe UI", sans-serif;
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-right: 6px;
-    }
-
-    .figma-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 14px;
-      max-width: 980px;
-    }
-
-    .figma-card {
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.84);
-      border: 1px solid rgba(49, 44, 38, 0.08);
-      display: grid;
-      gap: 10px;
-    }
-
-    .figma-swatch {
-      height: 54px;
-      border-radius: 12px;
-      border: 1px solid rgba(29, 27, 24, 0.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.22);
-    }
-
-    .figma-role {
-      color: var(--accent);
-      font-family: "Avenir Next", "Segoe UI", sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .figma-meta {
-      display: grid;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .figma-link {
-      color: var(--ink);
-      font-weight: 600;
-      line-height: 1.3;
-    }
-
-    .figma-hex {
-      color: var(--muted);
-      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
-      font-size: 0.82rem;
-    }
-
-    .figma-note {
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-
     .strap-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -546,7 +529,8 @@
       background: rgba(255,255,255,0.92);
     }
 
-    .strap-card.hidden {
+    .strap-card.hidden,
+    .strap-card.admin-hidden {
       display: none;
     }
 
@@ -627,18 +611,13 @@
     }
 
     .shade-line {
-      padding: 9px 10px;
+      padding: 10px 11px;
       border-radius: 12px;
       background: rgba(45, 62, 83, 0.05);
       border: 1px solid rgba(49, 44, 38, 0.06);
       color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.45;
-    }
-
-    .shade-line.warning {
-      background: rgba(122, 104, 85, 0.08);
-      border-color: rgba(122, 104, 85, 0.10);
     }
 
     .shade-label {
@@ -648,6 +627,34 @@
       font-family: "Avenir Next", "Segoe UI", sans-serif;
       font-size: 10px;
       letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .target-shade {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      vertical-align: middle;
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      font-size: 0.88rem;
+    }
+
+    .shade-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(49, 44, 38, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.42);
+    }
+
+    .shade-name {
+      font-weight: 600;
+    }
+
+    .shade-hex {
+      color: var(--muted);
+      letter-spacing: 0.02em;
       text-transform: uppercase;
     }
 
@@ -1044,9 +1051,6 @@
         grid-template-columns: 1fr;
       }
 
-      .figma-grid {
-        grid-template-columns: 1fr;
-      }
     }
 
     @media (max-width: 760px) {
@@ -1063,7 +1067,19 @@
       }
 
       .hero-meta {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
+      }
+
+      .collapsible-panel {
+        padding: 0;
+      }
+
+      .panel-summary {
+        padding: 22px;
+      }
+
+      .collapsible-content {
+        padding: 0 22px 22px;
       }
 
       .section-head {
@@ -1101,47 +1117,20 @@
   <div class="page-shell">
     <section class="brief-panel" id="wardrobe-brief" aria-labelledby="wardrobe-brief-title">
       <div class="brief-head">
-        <h2 class="brief-title" id="wardrobe-brief-title">Wardrobe Brief</h2>
+        <h2 class="brief-title" id="wardrobe-brief-title">Reviewer Brief</h2>
         <div class="brief-status" id="brief-status">Acknowledgment required</div>
       </div>
       <div class="brief-copy">
-        <p>I am a 25-year-old man building out a cohesive menswear wardrobe from the ground up. I want my style to feel like quiet luxury, classic menswear with a modern twist, timeless masculine elegance, and understated refinement.</p>
-        <p>My goal is to look polished, attractive, intentional, and expensive-looking without being loud, flashy, logo-heavy, overly trendy, or try-hard. I want my clothes to signal refined taste through fit, fabric, silhouette, texture, color harmony, and restraint.</p>
+        <p>Rate each strap by what looks best for a 25-year-old building a quiet, polished menswear wardrobe. Favor refined, versatile options that work with stainless steel watches, silver jewelry, and clothes in black, white, cream, navy, blue, and brown. The core aesthetic is quiet luxury, classic menswear, and a modern edge. Avoid anything that feels loud, flashy, overly trendy, or try-hard.</p>
       </div>
       <div class="brief-actions">
         <label class="brief-check" for="brief-read-checkbox">
           <input id="brief-read-checkbox" type="checkbox" />
-          <span>I have read this wardrobe brief.</span>
+          <span>I have read this reviewer brief.</span>
         </label>
         <button class="brief-button" id="brief-acknowledge" type="button" disabled>Acknowledge Brief</button>
       </div>
     </section>
-
-    <header class="hero">
-      <div class="eyebrow">Quiet Luxury Strap Deck · Version 1</div>
-      <h1>TUNS Final Strap Shortlist</h1>
-      <p class="hero-copy">
-        A cleaner visual presentation of the final ranking: ten curated strap directions, each expanded into a ten-step buy ladder. The goal is restrained, textural, age-appropriate elegance for stainless steel watches, silver jewelry, and a wardrobe built around black, white, cream, navy, blue, and brown.
-      </p>
-      <div class="hero-meta">
-        <div class="meta-card">
-          <div class="meta-label">Core Aesthetic</div>
-          <div class="meta-value">Quiet luxury, classic menswear, modern edge</div>
-        </div>
-        <div class="meta-card">
-          <div class="meta-label">Best Material Bias</div>
-          <div class="meta-value">Suede, nubuck, fine-grain calf, matte leather</div>
-        </div>
-        <div class="meta-card">
-          <div class="meta-label">Primary Warning</div>
-          <div class="meta-value">Do not let exotics become the daily signature</div>
-        </div>
-        <div class="meta-card">
-          <div class="meta-label">Strongest First Cart</div>
-          <div class="meta-value">Etaupe, dark brown nubuck, graphite, navy, black</div>
-        </div>
-      </div>
-    </header>
 
     <div class="content">
       <aside class="sidebar">
@@ -1151,20 +1140,11 @@
       </aside>
 
       <main class="main">
-        <section class="panel">
-          <h2>At A Glance</h2>
-          <p class="subcopy">
-            The first five directions are the real foundation. The remaining five give you supporting depth, situational options, and a controlled dress lane without letting the collection drift into loud or over-styled territory.
+        <section class="panel intro-panel">
+          <h2>Before You Rate</h2>
+          <p>
+            Trust your eye. Like the straps that look good enough to wear, and dislike the ones you would not want to see on the watch.
           </p>
-          <div class="summary-grid" id="summary-grid"></div>
-        </section>
-
-        <section class="panel">
-          <h2>Strongest First Order</h2>
-          <p class="subcopy">
-            If this were my first cart from TUNS for your exact goal, I would still start with these five. They give you the most attractive mix of warmth, restraint, modernity, and repeat wear.
-          </p>
-          <div class="summary-grid" id="first-order-grid"></div>
         </section>
 
         <section class="toolbar" role="toolbar" aria-label="Filters and view options">
@@ -1414,49 +1394,6 @@
       }
     ];
 
-    const familyGuidance = {
-      "soft-etaupe-everyday-neutral": {
-        target: "Cool mushroom / stone taupe with a light-mid depth, muted saturation, matte-dry finish, and soft or fine texture. Avoid creamy beige, camel warmth, or glossy dress shine.",
-        verify: "Look for grey-beige balance, low edge contrast, and a dusty rather than yellow cast."
-      },
-      "deep-dark-brown-nubuck": {
-        target: "Neutral-to-cool espresso or bitter chocolate with deep value, muted saturation, matte-dry finish, and soft nap. Avoid chestnut red, orange tobacco, or waxy pull-up glow.",
-        verify: "The best photos should read brown-black at first glance, then reveal soft texture rather than red warmth."
-      },
-      "graphite-suede-soft-grey-matte": {
-        target: "Cool slate to charcoal with mid-deep depth, low saturation, matte finish, and soft or fine texture. Avoid taupe warmth, blue cast, or metallic silver glare.",
-        verify: "The strap should feel architectural and muted, not beige-grey or bright silver-grey."
-      },
-      "ink-navy-refined-texture": {
-        target: "Inky navy or smoked midnight blue with deep value, muted saturation, matte-to-low-sheen finish, and refined texture. Avoid cobalt brightness, purple cast, or glossy formal shine.",
-        verify: "The best navy options should read almost black indoors, then reveal blue in softer light."
-      },
-      "black-formal-minimal": {
-        target: "True onyx black with near-black depth, muted saturation, low sheen, and fine texture. Avoid patent shine, washed charcoal fade, or thick contrasting edge paint.",
-        verify: "Look for black that stays black, not anthracite, and a surface that feels calm rather than glassy."
-      },
-      "dark-brown-polished-minimal": {
-        target: "Neutral dark chocolate with deep value, muted saturation, low sheen, and fine grain. Avoid orange tobacco, burgundy cast, or rugged wax bloom.",
-        verify: "The color should stay elegant and tailored, not heritage-rustic."
-      },
-      "soft-black-matte-casual": {
-        target: "Soft onyx to charcoal-black with near-black depth, muted saturation, matte-dry finish, and tactile texture. Avoid glossy dress leather or aggressive rugged pull-up.",
-        verify: "These should look tactile and relaxed, not corporate or shiny."
-      },
-      "slate-grey-structured-leather": {
-        target: "Cool slate / graphite with mid-deep depth, muted saturation, structured finish, and fine or graphic texture. Avoid beige warmth or bright silver lift.",
-        verify: "The strongest entries look sharp and urban, not soft taupe or light ash."
-      },
-      "muted-blue-accent": {
-        target: "Smoked blue to deep navy with mid-deep value, muted saturation, matte-to-soft finish, and refined texture. Avoid royal blue, cobalt, or vivid teal drift.",
-        verify: "Blue should feel controlled and dark enough to live with black, navy, and steel."
-      },
-      "one-controlled-matte-exotic": {
-        target: "Cool-toned navy, grey, or etaupe in a matte or nubuck exotic finish with restrained scale contrast. Avoid glossy lacquer, bright exotic colors, or high-flash dress shine.",
-        verify: "The exotic should read subdued first, luxurious second; if it screams texture before color, it is too loud."
-      }
-    };
-
     const figmaOptions = {
       "soft-etaupe-everyday-neutral": [
         { role: "Primary Light Anchor", name: "Beige", hex: "#EDE8D0", url: "https://www.figma.com/colors/beige/", note: "Use this as the pale stone side of the target; reject straps that turn more yellow or creamy than this." },
@@ -1510,144 +1447,78 @@
       ]
     };
 
+    function shadeOption(sectionId, names) {
+      const options = figmaOptions[sectionId] || [];
+      for (const name of names) {
+        const match = options.find((option) => option.name === name);
+        if (match) return match;
+      }
+      return options[0] || { name: "Taupe", hex: "#54463A" };
+    }
+
     function targetShade(section, item) {
       const title = item.title.toLowerCase();
+      const pick = (...names) => shadeOption(section.id, names);
+      let shade;
+
       if (section.id === "soft-etaupe-everyday-neutral") {
-        if (title.includes("suede")) return "cool mushroom taupe | light-mid | muted | matte-dry | soft";
-        if (title.includes("butero")) return "stone taupe | light-mid | muted | matte-low sheen | fine";
-        if (title.includes("nubuck")) return "dusty greige taupe | light-mid | muted | matte-dry | soft";
-        if (title.includes("togo")) return "clean greige taupe | mid | muted | low sheen | fine";
-        if (title.includes("box calf")) return "tailored stone taupe | mid | muted | low sheen | fine";
-        if (title.includes("epsom")) return "pale cream-stone | light | muted | structured | graphic";
-        return "etaupe / stone taupe | mid | muted | low sheen | dressy";
+        shade = title.includes("cream") || title.includes("begie") || title.includes("beige")
+          ? pick("Beige")
+          : pick("Taupe", "Beige");
+      } else if (section.id === "deep-dark-brown-nubuck") {
+        shade = title.includes("sepia") || title.includes("conag")
+          ? pick("Sepia Brown", "Dark Brown")
+          : title.includes("tan")
+            ? pick("Coffee", "Dark Brown")
+            : pick("Dark Brown");
+      } else if (section.id === "graphite-suede-soft-grey-matte") {
+        shade = title.includes("gray") || title.includes("grey")
+          ? pick("Gunmetal Gray", "Charcoal")
+          : pick("Slate Gray", "Gunmetal Gray");
+      } else if (section.id === "ink-navy-refined-texture") {
+        shade = title.includes("blue-gray")
+          ? pick("Blue-Gray", "Midnight Blue")
+          : pick("Midnight Blue", "Navy Blue");
+      } else if (section.id === "black-formal-minimal") {
+        shade = title.includes("epsom") || title.includes("epi")
+          ? pick("Black", "Jet Black")
+          : pick("Jet Black", "Onyx");
+      } else if (section.id === "dark-brown-polished-minimal") {
+        shade = title.includes("sepia") || title.includes("tobaco")
+          ? pick("Dark Brown", "Coffee")
+          : pick("Coffee", "Dark Brown");
+      } else if (section.id === "soft-black-matte-casual") {
+        shade = title.includes("grey") || title.includes("gray")
+          ? pick("Gunmetal Gray", "Onyx")
+          : pick("Onyx", "Charcoal");
+      } else if (section.id === "slate-grey-structured-leather") {
+        shade = title.includes("swift") || title.includes("museum")
+          ? pick("Pewter", "Slate Gray")
+          : pick("Slate Gray", "Blue-Gray");
+      } else if (section.id === "muted-blue-accent") {
+        shade = title.includes("dark") || title.includes("navy")
+          ? pick("Blue-Gray", "Steel Blue")
+          : pick("Steel Blue", "Cadet Blue");
+      } else if (section.id === "one-controlled-matte-exotic") {
+        if (title.includes("black")) {
+          shade = { name: "Black", hex: "#000000" };
+        } else if (title.includes("brown")) {
+          shade = { name: "Dark Brown", hex: "#654321" };
+        } else if (title.includes("gray") || title.includes("grey")) {
+          shade = pick("Slate Gray", "Taupe");
+        } else if (title.includes("etaupe")) {
+          shade = pick("Taupe", "Slate Gray");
+        } else {
+          shade = pick("Midnight Blue", "Slate Gray");
+        }
+      } else {
+        shade = { name: "Taupe", hex: "#54463A" };
       }
-      if (section.id === "deep-dark-brown-nubuck") {
-        if (title.includes("dark brown")) return "espresso brown | deep | muted | matte-dry | soft";
-        if (title.includes("sepia")) return "deep sepia brown | deep | muted | matte-dry | soft";
-        if (title.includes("smooth brown")) return "bitter chocolate brown | deep-mid | muted | matte-dry | soft";
-        if (title.includes("tan orange")) return "warm tan-orange brown | mid | moderate | matte | soft";
-        if (title.includes("tan brown")) return "warm tan-brown | mid | muted-moderate | matte | soft";
-        if (title.includes("conag")) return "dark cognac brown | mid-deep | moderate | matte | soft";
-        if (title.includes("alligator")) return "dark chocolate exotic brown | deep | muted | matte-nubuck | dressy";
-        return "dark chocolate brown | mid-deep | muted | matte-dry | soft";
-      }
-      if (section.id === "graphite-suede-soft-grey-matte") {
-        if (title.includes("dark grey")) return "charcoal slate grey | deep-mid | muted | matte-dry | soft";
-        if (title.includes("nubuck")) return "graphite grey | mid-deep | muted | matte-dry | soft";
-        if (title.includes("gray")) return "cool grey | mid | muted | matte | soft";
-        if (title.includes("steel")) return "steel slate grey | mid-deep | muted | softly waxed | rugged";
-        if (title.includes("waxy")) return "cool waxed grey | mid | muted | softly waxed | rugged";
-        if (title.includes("museum")) return "smoked patina grey | mid | muted | low sheen | dressy";
-        if (title.includes("epi")) return "structured graphite grey | mid | muted | structured | graphic";
-        return "cool graphite grey | mid | muted | low sheen | fine";
-      }
-      if (section.id === "ink-navy-refined-texture" || section.id === "muted-blue-accent") {
-        if (title.includes("dark blue")) return "smoked dark blue | deep-mid | muted | matte-dry | soft";
-        if (title.includes("navy")) return "inky navy | deep | muted | matte-low sheen | fine";
-        if (title.includes("alaska blue")) return "muted steel blue | mid-deep | muted | soft-matte | fine";
-        if (title.includes("museum")) return "deep smoky blue | mid-deep | muted | low sheen | dressy";
-        if (title.includes("bison")) return "dark navy blue | deep | muted | matte | textured";
-        if (title.includes("shell")) return "deep shell navy | deep | muted | low sheen | polished";
-        return "deep blue-navy | mid-deep | muted | low sheen | refined";
-      }
-      if (section.id === "black-formal-minimal") {
-        if (title.includes("box calf")) return "true onyx black | near-black | muted | low sheen | fine";
-        if (title.includes("alran")) return "soft true black | near-black | muted | low sheen | fine";
-        if (title.includes("swift")) return "soft ink black | near-black | muted | low sheen | fine-soft";
-        if (title.includes("epsom")) return "graphic true black | near-black | muted | structured | graphic";
-        if (title.includes("epi")) return "structured black | near-black | muted | structured | graphic";
-        return "soft onyx black | near-black | muted | matte-low sheen | refined";
-      }
-      if (section.id === "dark-brown-polished-minimal") {
-        if (title.includes("alran")) return "dark chocolate brown | deep | muted | low sheen | fine";
-        if (title.includes("butero")) return "espresso-chocolate brown | deep | muted | low sheen | fine";
-        if (title.includes("babele")) return "dark cocoa brown | deep-mid | muted | low sheen | fine-textured";
-        if (title.includes("box calf")) return "tailored dark chocolate | deep | muted | low sheen | fine";
-        if (title.includes("tuscany")) return "polished dark brown | deep-mid | muted | low sheen | classic";
-        if (title.includes("maya")) return "earthy dark brown | mid-deep | muted | matte-low sheen | casual";
-        if (title.includes("vachetta")) return "dark brown | mid-deep | muted | matte-low sheen | clean";
-        if (title.includes("sepia")) return "sepia brown | deep-mid | muted | softly waxed | rugged";
-        if (title.includes("tobaco")) return "tobacco brown | mid-deep | moderate | softly waxed | rugged";
-        return "dark tobacco brown | mid-deep | moderate | softly waxed | rugged";
-      }
-      if (section.id === "soft-black-matte-casual") {
-        if (title.includes("nubuck")) return "soft charcoal-black | near-black | muted | matte-dry | soft";
-        if (title.includes("suede")) return "washed onyx black | near-black | muted | matte-dry | soft";
-        if (title.includes("babele")) return "grainy onyx black | near-black | muted | low sheen | fine-textured";
-        if (title.includes("pueblo")) return "charcoal-black | near-black | muted | matte | rugged-soft";
-        if (title.includes("bison")) return "textured black | near-black | muted | matte | rugged";
-        if (title.includes("chromepak")) return "deep rugged black | near-black | muted | softly waxed | rugged";
-        if (title.includes("vegtan")) return "plain true black | near-black | muted | matte | utility";
-        return "soft black | near-black | muted | matte | casual";
-      }
-      if (section.id === "slate-grey-structured-leather") {
-        if (title.includes("dark grey")) return "deep graphite slate | deep-mid | muted | structured | graphic";
-        if (title.includes("grey")) return "slate grey | mid-deep | muted | structured-low sheen | fine";
-        if (title.includes("swift")) return "soft slate grey | mid | muted | low sheen | fine";
-        if (title.includes("epi")) return "graphic graphite grey | mid | muted | structured | graphic";
-        if (title.includes("museum")) return "smoky grey | mid | muted | low sheen | dressy";
-        if (title.includes("bison")) return "textured stone-grey | mid | muted | matte | rugged";
-        if (title.includes("alligator")) return "cool dress grey | mid-deep | muted | matte-low sheen | dressy";
-        return "cool slate grey | mid | muted | low sheen | fine";
-      }
-      if (section.id === "one-controlled-matte-exotic") {
-        if (title.includes("navy")) return "inky exotic navy | deep | muted | matte-nubuck | dressy";
-        if (title.includes("gray")) return "stone graphite grey | mid-deep | muted | matte-nubuck | dressy";
-        if (title.includes("etaupe")) return "cool etaupe exotic | mid | muted | matte-low sheen | dressy";
-        if (title.includes("brown")) return "dark chocolate exotic brown | deep | muted | matte-nubuck | dressy";
-        return "cool black exotic | near-black | muted | low sheen | dressy";
-      }
-      return "restrained core shade | muted depth | low sheen | refined texture";
-    }
 
-    function verifyPhoto(section, item) {
-      const title = item.title.toLowerCase();
-      if (section.id === "soft-etaupe-everyday-neutral") {
-        if (title.includes("epsom cream")) return "Use only if the photo reads stone-cream rather than yellow cream; skip if it turns bridal or stark.";
-        if (title.includes("alligator")) return "Check that the scales stay subdued and the undertone stays cool; skip if it flashes glossy beige.";
-        return "Look for a cool stone cast, low sheen, and no camel or yellow pull in the photo.";
-      }
-      if (section.id === "deep-dark-brown-nubuck") {
-        if (title.includes("tan orange")) return "Only keep it if the orange reads burnt and muted; skip if it looks pumpkin or whiskey-bright.";
-        if (title.includes("alligator")) return "The nubuck finish should suppress the scale contrast; skip if the exotic pattern dominates before the color.";
-        return "You want brown-black depth, soft nap, and no red chestnut or orange tobacco cast.";
-      }
-      if (section.id === "graphite-suede-soft-grey-matte" || section.id === "slate-grey-structured-leather") {
-        return "Check that the grey stays cool and muted; skip if it drifts beige, icy silver, or blue-metallic.";
-      }
-      if (section.id === "ink-navy-refined-texture" || section.id === "muted-blue-accent") {
-        return "The photo should read almost black first, then reveal blue; skip if it turns cobalt, royal, or purple.";
-      }
-      if (section.id === "black-formal-minimal" || section.id === "soft-black-matte-casual") {
-        return "Look for calm black with minimal glare and restrained edge paint; skip if the surface looks lacquered or washed-out grey.";
-      }
-      if (section.id === "dark-brown-polished-minimal") {
-        return "Favor neutral chocolate depth over red or orange warmth; skip if the leather feels too rugged, waxy, or rustic.";
-      }
-      if (section.id === "one-controlled-matte-exotic") {
-        return "The exotic should stay matte and quiet in the photo; skip if the scales or gloss read louder than the color.";
-      }
-      return familyGuidance[section.id].verify;
+      return `<span class="target-shade"><span class="shade-swatch" style="background:${shade.hex};"></span><span class="shade-name">${shade.name}</span><span class="shade-hex">${shade.hex}</span></span>`;
     }
-
-    function fallbackWarning(section, item) {
-      if (item.rank <= 3) return "No compromise if the photo matches the target shade and stays restrained.";
-      if (item.rank <= 5) return "Still a real endorsement, but the surface or cut is a touch more specific than the top three.";
-      if (item.rank <= 8) return "Tonal fallback only: acceptable if the top tier is unavailable, but less exact in finish or softness.";
-      return "Specialist fallback: use only if you accept a more dressy, watch-specific, or maturity-skewing compromise.";
-    }
-
-    const firstOrder = [
-      sections[0].items[0],
-      sections[1].items[0],
-      sections[2].items[0],
-      sections[3].items[0],
-      sections[4].items[0]
-    ];
 
     const navList = document.getElementById("nav-list");
-    const summaryGrid = document.getElementById("summary-grid");
-    const firstOrderGrid = document.getElementById("first-order-grid");
     const sectionsRoot = document.getElementById("sections");
 
     function cardButton(label, url, primary = false) {
@@ -1661,16 +1532,6 @@
       navList.insertAdjacentHTML(
         "beforeend",
         `<a class="nav-link" href="#${section.id}" data-section="${section.id}"><strong>${section.rank}.</strong> ${section.title}</a>`
-      );
-
-      summaryGrid.insertAdjacentHTML(
-        "beforeend",
-        `<article class="summary-card">
-          <div class="summary-rank">${section.rank}</div>
-          <h3>${section.title}</h3>
-          <p>${section.summary}</p>
-          <p><strong>Best on:</strong> ${section.worksOn}</p>
-        </article>`
       );
 
       const cards = section.items.map((item, idx) => {
@@ -1700,11 +1561,7 @@
             </div>
             <div class="shade-block">
               <div class="shade-line"><span class="shade-label">Target Shade</span>${targetShade(section, item)}</div>
-              <div class="shade-line"><span class="shade-label">Verify</span>${verifyPhoto(section, item)}</div>
-            </div>
-            <div class="shade-block">
               <div class="shade-line"><span class="shade-label">Why This Rank</span>${item.note}</div>
-              <div class="shade-line warning"><span class="shade-label">Fallback Warning</span>${fallbackWarning(section, item)}</div>
             </div>
             <div class="strap-actions">
               ${cardButton("Open Listing", item.url, true)}
@@ -1723,20 +1580,6 @@
               <div class="section-rank"><strong>${section.rank}</strong> Ranked Direction</div>
               <h2>${section.title}</h2>
               <p class="subcopy">${section.intro}</p>
-              <div class="family-target"><strong>Best Color Target</strong>${familyGuidance[section.id].target}</div>
-              <div class="figma-grid">
-                ${figmaOptions[section.id].map((option) => `
-                  <article class="figma-card">
-                    <div class="figma-role">${option.role}</div>
-                    <div class="figma-swatch" style="background:${option.hex};"></div>
-                    <div class="figma-meta">
-                      <a class="figma-link" href="${option.url}" target="_blank" rel="noreferrer">${option.name}</a>
-                      <div class="figma-hex">${option.hex}</div>
-                    </div>
-                    <div class="figma-note">${option.note}</div>
-                  </article>
-                `).join("")}
-              </div>
             </div>
             <div class="works-on">
               <strong>Works Best On</strong>
@@ -1748,18 +1591,6 @@
           </div>
           <div class="empty-state">No straps in this section match the current filter.</div>
         </section>`
-      );
-    });
-
-    firstOrder.forEach((item, index) => {
-      firstOrderGrid.insertAdjacentHTML(
-        "beforeend",
-        `<article class="summary-card">
-          <div class="summary-rank">${index + 1}</div>
-          <h3>${item.title}</h3>
-          <p>${item.note}</p>
-          <p style="margin-top:14px;">${cardButton("Open Listing", item.url, true)}</p>
-        </article>`
       );
     });
 
@@ -1794,11 +1625,37 @@
     const STORAGE_KEY = "tuns-shortlist-v1";
     const shortlist = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
 
+    function hiddenStrapIds() {
+      return new Set(window.__deckBridgeState?.hiddenStrapIds || []);
+    }
+
+    function isAdminHiddenId(id) {
+      return hiddenStrapIds().has(id);
+    }
+
+    function isAdminHiddenCard(card) {
+      return isAdminHiddenId(card.dataset.id);
+    }
+
+    function pruneHiddenShortlist() {
+      let changed = false;
+      hiddenStrapIds().forEach((id) => {
+        if (shortlist.delete(id)) {
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        persistShortlist();
+      }
+    }
+
     function persistShortlist() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify([...shortlist]));
     }
 
     function syncFavState() {
+      pruneHiddenShortlist();
       document.querySelectorAll(".strap-card").forEach((card) => {
         const id = card.dataset.id;
         const on = shortlist.has(id);
@@ -1815,6 +1672,7 @@
     }
 
     function toggleFavorite(id) {
+      if (isAdminHiddenId(id)) return;
       if (shortlist.has(id)) shortlist.delete(id);
       else shortlist.add(id);
       persistShortlist();
@@ -1846,6 +1704,7 @@
     const chips = document.querySelectorAll(".toolbar .chip[data-filter]");
 
     function matchesFilter(card) {
+      if (isAdminHiddenCard(card)) return false;
       if (currentFilter === "all") return true;
       if (currentFilter === "top5") return Number(card.dataset.rank) <= 5;
       if (currentFilter === "purest") return card.dataset.purest === "true";
@@ -1855,10 +1714,12 @@
 
     function applyFilter() {
       document.querySelectorAll(".strap-card").forEach((card) => {
-        card.classList.toggle("hidden", !matchesFilter(card));
+        const adminHidden = isAdminHiddenCard(card);
+        card.classList.toggle("admin-hidden", adminHidden);
+        card.classList.toggle("hidden", !adminHidden && !matchesFilter(card));
       });
       document.querySelectorAll("#sections .panel").forEach((panel) => {
-        const visible = panel.querySelectorAll(".strap-card:not(.hidden)").length;
+        const visible = panel.querySelectorAll(".strap-card:not(.hidden):not(.admin-hidden)").length;
         panel.classList.toggle("is-empty", visible === 0);
       });
       updateCounts();
@@ -1868,6 +1729,7 @@
       const cards = document.querySelectorAll(".strap-card");
       let all = 0, top5 = 0, purest = 0, slist = 0;
       cards.forEach((c) => {
+        if (isAdminHiddenCard(c)) return;
         all++;
         if (Number(c.dataset.rank) <= 5) top5++;
         if (c.dataset.purest === "true") purest++;
@@ -1908,7 +1770,7 @@
     let lbVisible = [];
 
     function buildVisibleList() {
-      const visibleCards = [...document.querySelectorAll(".strap-card:not(.hidden)")];
+      const visibleCards = [...document.querySelectorAll(".strap-card:not(.hidden):not(.admin-hidden)")];
       lbVisible = visibleCards
         .map((card) => {
           const lbId = Number(card.querySelector(".strap-media").dataset.lb);
@@ -2010,6 +1872,16 @@
     document.querySelectorAll("#sections .panel").forEach((panel) => spy.observe(panel));
 
     /* ---------- Init ---------- */
+    window.addEventListener("deck:bridge-state", () => {
+      pruneHiddenShortlist();
+      syncFavState();
+      applyFilter();
+      if (lightbox.classList.contains("open")) {
+        buildVisibleList();
+        renderLightbox();
+      }
+    });
+
     syncBriefState();
     syncFavState();
     applyFilter();

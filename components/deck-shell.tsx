@@ -2,24 +2,36 @@
 
 import Link from "next/link";
 import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
   UserButton,
   useUser
 } from "@clerk/nextjs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MutableRefObject
+} from "react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import type { DeckMethod } from "@/lib/strap-catalog";
 
-type DeckMethod = "v1";
 type StrapOpinion = "like" | "dislike";
 
 type DeckShellProps = {
   method: DeckMethod;
   title: string;
-  description: string;
+  description?: string;
   iframeSrc: string;
+};
+
+type DeckFrameProps = {
+  iframeRef?: MutableRefObject<HTMLIFrameElement | null>;
+  name?: string;
+  onLoad?: () => void;
+  src: string;
+  title: string;
 };
 
 type DeckResponse = {
@@ -43,6 +55,7 @@ type DeckStateMessage = {
   basePreferencesUpdatedAt?: number;
   baseShortlist?: string[];
   baseBriefAcknowledged?: boolean;
+  hiddenStrapIds: string[];
   responses: DeckResponse[];
 };
 
@@ -57,6 +70,7 @@ type DeckHydrateMessage = {
   basePreferencesUpdatedAt?: number;
   baseShortlist?: string[];
   baseBriefAcknowledged?: boolean;
+  hiddenStrapIds: string[];
   responses: DeckResponse[];
 };
 
@@ -80,10 +94,13 @@ function normalizeResponses(responses: DeckResponse[]) {
 }
 
 function serializeDeckState(state: DeckStateSnapshot) {
+  const hiddenStrapIds = new Set(state.hiddenStrapIds);
+
   return JSON.stringify({
-    shortlist: [...state.shortlist].sort(),
+    shortlist: state.shortlist.filter((id) => !hiddenStrapIds.has(id)).sort(),
     briefAcknowledged: state.briefAcknowledged,
     responses: normalizeResponses(state.responses)
+      .filter((item) => !hiddenStrapIds.has(item.strapId))
       .map((item) => ({
         strapId: item.strapId,
         strapTitle: item.strapTitle,
@@ -99,6 +116,163 @@ const ADMIN_EMAIL = normalizeEmail(
   process.env.NEXT_PUBLIC_ADMIN_EMAIL || "edmangalicea@gmail.com"
 );
 
+const METHOD_ROUTES: Array<{ method: DeckMethod; label: string; href: string }> = [
+  { method: "v1", label: "Method 1", href: "/method-1" },
+  { method: "v2", label: "Method 2", href: "/method-2" }
+];
+
+function routeForMethod(method: DeckMethod) {
+  return METHOD_ROUTES.find((route) => route.method === method)?.href ?? "/method-1";
+}
+
+function MethodNav({ activeMethod }: { activeMethod: DeckMethod }) {
+  return (
+    <nav className="method-switch" aria-label="Rating methods">
+      {METHOD_ROUTES.map((route) => (
+        <Link
+          key={route.method}
+          className={`method-link${route.method === activeMethod ? " active" : ""}`}
+          href={route.href}
+        >
+          {route.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function DeckFrame({
+  iframeRef,
+  name,
+  onLoad,
+  src,
+  title
+}: DeckFrameProps) {
+  const localIframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const setIframeRef = useCallback(
+    (node: HTMLIFrameElement | null) => {
+      localIframeRef.current = node;
+      if (iframeRef) {
+        iframeRef.current = node;
+      }
+    },
+    [iframeRef]
+  );
+
+  useEffect(() => {
+    const iframe = localIframeRef.current;
+    if (!iframe) {
+      return;
+    }
+
+    let cleanupFrame = () => {};
+    let resizeFrame = 0;
+
+    const measure = () => {
+      window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => {
+        try {
+          const doc = iframe.contentDocument;
+          const body = doc?.body;
+          const root = doc?.documentElement;
+          if (!doc || !body || !root) {
+            return;
+          }
+
+          const nextHeight = Math.max(
+            body.scrollHeight,
+            body.offsetHeight,
+            root.clientHeight,
+            root.scrollHeight,
+            root.offsetHeight,
+            window.innerHeight - 96
+          );
+
+          iframe.style.height = `${Math.ceil(nextHeight)}px`;
+        } catch {
+          iframe.style.height = "";
+        }
+      });
+    };
+
+    const connectToFrame = () => {
+      cleanupFrame();
+
+      try {
+        const doc = iframe.contentDocument;
+        const frameWindow = iframe.contentWindow;
+        if (!doc || !frameWindow) {
+          measure();
+          return;
+        }
+
+        const resizeObserver = new ResizeObserver(measure);
+        resizeObserver.observe(doc.documentElement);
+        if (doc.body) {
+          resizeObserver.observe(doc.body);
+        }
+
+        const mutationObserver = new MutationObserver(measure);
+        mutationObserver.observe(doc.documentElement, {
+          attributes: true,
+          characterData: true,
+          childList: true,
+          subtree: true
+        });
+
+        doc.addEventListener("load", measure, true);
+        doc.addEventListener("toggle", measure, true);
+        frameWindow.addEventListener("resize", measure);
+
+        cleanupFrame = () => {
+          resizeObserver.disconnect();
+          mutationObserver.disconnect();
+          doc.removeEventListener("load", measure, true);
+          doc.removeEventListener("toggle", measure, true);
+          frameWindow.removeEventListener("resize", measure);
+        };
+
+        measure();
+        window.setTimeout(measure, 250);
+      } catch {
+        measure();
+      }
+    };
+
+    iframe.addEventListener("load", connectToFrame);
+    window.addEventListener("resize", measure);
+    connectToFrame();
+
+    return () => {
+      iframe.removeEventListener("load", connectToFrame);
+      window.removeEventListener("resize", measure);
+      cleanupFrame();
+      window.cancelAnimationFrame(resizeFrame);
+    };
+  }, [src]);
+
+  return (
+    <section className="deck-frame">
+      <iframe
+        ref={setIframeRef}
+        name={name}
+        onLoad={onLoad}
+        scrolling="auto"
+        src={src}
+        style={{
+          border: 0,
+          display: "block",
+          minHeight: "100vh",
+          overflow: "auto",
+          width: "100%"
+        }}
+        title={title}
+      />
+    </section>
+  );
+}
+
 export function DeckShell({
   method,
   title,
@@ -113,17 +287,15 @@ export function DeckShell({
       <main className="app-shell">
         <header className="app-header">
           <div className="app-brand">
-            <span className="app-brand-kicker">Next.js shell active</span>
             <h1>{title}</h1>
-            <p>{description}</p>
+            {description ? <p>{description}</p> : null}
           </div>
           <div className="app-actions">
+            <MethodNav activeMethod={method} />
             <span className="sync-chip">Auth/env setup pending</span>
           </div>
         </header>
-        <section className="deck-frame">
-          <iframe src={iframeSrc} title={title} />
-        </section>
+        <DeckFrame src={iframeSrc} title={title} />
       </main>
     );
   }
@@ -144,7 +316,7 @@ function AuthenticatedDeckShell({
   description,
   iframeSrc
 }: DeckShellProps) {
-  const { user } = useUser();
+  const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const prefs = useQuery(
     api.preferences.getForCurrentUser,
@@ -154,6 +326,7 @@ function AuthenticatedDeckShell({
     api.responses.getForCurrentUser,
     isAuthenticated ? { method } : "skip"
   );
+  const hiddenStrapIds = useQuery(api.responses.getHiddenStrapIds, { method });
   const savePreferences = useMutation(api.preferences.saveForCurrentUser);
   const saveResponses = useMutation(api.responses.upsertManyForCurrentUser);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
@@ -167,44 +340,58 @@ function AuthenticatedDeckShell({
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const userEmail = normalizeEmail(user?.primaryEmailAddress?.emailAddress);
-  const hasSignedInUser = Boolean(userEmail);
+  const hasSignedInUser = Boolean(isSignedIn && userEmail);
   const canSyncFeedback = hasSignedInUser && isAuthenticated;
   const isAdmin = userEmail === ADMIN_EMAIL;
 
-  const serverState = useMemo<DeckStateSnapshot>(() => ({
+  const serverState = useMemo<DeckStateSnapshot>(() => {
+    const hiddenIds = hiddenStrapIds ?? [];
+    const hiddenIdSet = new Set(hiddenIds);
+
+    return {
+      method,
+      shortlist: (prefs?.shortlist ?? []).filter((id) => !hiddenIdSet.has(id)),
+      briefAcknowledged: prefs?.briefAcknowledged ?? false,
+      preferencesUpdatedAt: prefs?.updatedAt,
+      basePreferencesUpdatedAt: prefs?.updatedAt,
+      baseShortlist: (prefs?.shortlist ?? []).filter((id) => !hiddenIdSet.has(id)),
+      baseBriefAcknowledged: prefs?.briefAcknowledged ?? false,
+      hiddenStrapIds: hiddenIds,
+      responses:
+        responses
+          ?.filter((item) => !hiddenIdSet.has(item.strapId))
+          .map((item): DeckResponse => ({
+            strapId: item.strapId,
+            strapTitle: item.strapTitle,
+            response: item.response,
+            comment: item.comment ?? "",
+            updatedAt: item.updatedAt,
+            baseUpdatedAt: item.updatedAt,
+            clientUpdatedAt: item.clientUpdatedAt,
+            baseClientUpdatedAt: item.clientUpdatedAt
+          })) ?? []
+    };
+  }, [
     method,
-    shortlist: prefs?.shortlist ?? [],
-    briefAcknowledged: prefs?.briefAcknowledged ?? false,
-    preferencesUpdatedAt: prefs?.updatedAt,
-    basePreferencesUpdatedAt: prefs?.updatedAt,
-    baseShortlist: prefs?.shortlist ?? [],
-    baseBriefAcknowledged: prefs?.briefAcknowledged ?? false,
-    responses:
-      responses?.map((item): DeckResponse => ({
-        strapId: item.strapId,
-        strapTitle: item.strapTitle,
-        response: item.response,
-        comment: item.comment ?? "",
-        updatedAt: item.updatedAt,
-        baseUpdatedAt: item.updatedAt,
-        clientUpdatedAt: item.clientUpdatedAt,
-        baseClientUpdatedAt: item.clientUpdatedAt
-      })) ?? []
-  }), [
-    method,
+    hiddenStrapIds,
     prefs?.briefAcknowledged,
     prefs?.shortlist,
     responses
   ]);
 
   const serverPayload = useMemo(() => serializeDeckState(serverState), [serverState]);
-  const activeState = optimisticState ?? serverState;
+  const activeState = optimisticState
+    ? {
+        ...optimisticState,
+        hiddenStrapIds: hiddenStrapIds ?? optimisticState.hiddenStrapIds
+      }
+    : serverState;
   const iframeState = useMemo<DeckHydrateMessage>(() => ({
     type: "deck:hydrate",
     isAuthenticated: canSyncFeedback,
     userKey: canSyncFeedback ? userEmail : undefined,
     ...activeState
-  }), [activeState, canSyncFeedback]);
+  }), [activeState, canSyncFeedback, userEmail]);
 
   const iframeName = JSON.stringify(iframeState);
   const iframeKey = `${method}:${canSyncFeedback ? userEmail : "guest"}`;
@@ -218,7 +405,7 @@ function AuthenticatedDeckShell({
   }, [method, userEmail]);
 
   useEffect(() => {
-    if (!canSyncFeedback || prefs === undefined || responses === undefined) {
+    if (!canSyncFeedback || prefs === undefined || responses === undefined || hiddenStrapIds === undefined) {
       return;
     }
 
@@ -230,7 +417,7 @@ function AuthenticatedDeckShell({
     if (!optimisticPayloadRef.current) {
       savedPayloadRef.current = serverPayload;
     }
-  }, [canSyncFeedback, prefs, responses, serverPayload]);
+  }, [canSyncFeedback, hiddenStrapIds, prefs, responses, serverPayload]);
 
   useEffect(() => {
     const win = iframeRef.current?.contentWindow;
@@ -319,6 +506,7 @@ function AuthenticatedDeckShell({
             basePreferencesUpdatedAt: preferenceResult.updatedAt,
             baseShortlist: preferenceResult.shortlist,
             baseBriefAcknowledged: preferenceResult.briefAcknowledged,
+            hiddenStrapIds: nextState.hiddenStrapIds,
             responses: responseResult.responses.map((item) => ({
               strapId: item.strapId,
               strapTitle: item.strapTitle,
@@ -372,6 +560,7 @@ function AuthenticatedDeckShell({
         method,
         shortlist: event.data.shortlist,
         briefAcknowledged: event.data.briefAcknowledged,
+        hiddenStrapIds: event.data.hiddenStrapIds ?? [],
         responses: event.data.responses
       });
 
@@ -390,6 +579,7 @@ function AuthenticatedDeckShell({
         basePreferencesUpdatedAt: event.data.basePreferencesUpdatedAt,
         baseShortlist: event.data.baseShortlist,
         baseBriefAcknowledged: event.data.baseBriefAcknowledged,
+        hiddenStrapIds: event.data.hiddenStrapIds ?? [],
         responses: normalizeResponses(event.data.responses)
       };
 
@@ -415,68 +605,66 @@ function AuthenticatedDeckShell({
   }, [isAuthenticated, method, savePreferences, saveResponses]);
 
   const syncLabel = isLoading
-    ? "Connecting auth"
+    ? hasSignedInUser
+      ? "Connecting auth"
+      : "View only"
     : hasSignedInUser
       ? isAuthenticated
         ? saveState === "saving"
           ? "Saving opinions"
           : saveState === "saved"
             ? "Saved"
-            : "Cloud sync on"
+          : "Cloud sync on"
         : "Signed in"
       : "View only";
+  const showUserButton = isUserLoaded && hasSignedInUser;
 
   return (
     <main className="app-shell">
       <header className="app-header">
         <div className="app-brand">
-          <span className="app-brand-kicker">Clerk + Convex + Vercel</span>
           <h1>{title}</h1>
-          <p>{description}</p>
+          {description ? <p>{description}</p> : null}
         </div>
         <div className="app-actions">
+          <MethodNav activeMethod={method} />
           <span className="sync-chip">{syncLabel}</span>
           {isAdmin ? (
             <Link className="auth-chip" href="/admin">
               Admin Dashboard
             </Link>
           ) : null}
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="auth-chip primary" type="button">
-                Sign In to Save
-              </button>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
+          {showUserButton ? (
             <div className="auth-chip">
-              <UserButton afterSignOutUrl="/method-1" />
+              <UserButton afterSignOutUrl={routeForMethod(method)} />
             </div>
-          </SignedIn>
+          ) : (
+            <Link className="auth-chip primary" href="/sign-in">
+              Sign In to Save
+            </Link>
+          )}
         </div>
       </header>
 
-      {isAuthenticated && (prefs === undefined || responses === undefined) ? (
+      {hiddenStrapIds === undefined || (isAuthenticated && (prefs === undefined || responses === undefined)) ? (
         <section className="loading-card">
           <div>
             <h2>Loading your saved deck state</h2>
             <p>
-              Pulling your shortlist, opinions, and comments from Convex before the
-              deck renders.
+              Pulling the current listing visibility, shortlist, opinions, and
+              comments from Convex before the deck renders.
             </p>
           </div>
         </section>
       ) : (
-        <section className="deck-frame">
-          <iframe
-            ref={iframeRef}
-            key={iframeKey}
-            name={iframeName}
-            onLoad={hydrateIframe}
-            src={iframeSrc}
-            title={title}
-          />
-        </section>
+        <DeckFrame
+          key={iframeKey}
+          iframeRef={iframeRef}
+          name={iframeName}
+          onLoad={hydrateIframe}
+          src={iframeSrc}
+          title={title}
+        />
       )}
     </main>
   );

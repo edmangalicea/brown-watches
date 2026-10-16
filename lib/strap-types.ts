@@ -1,0 +1,30 @@
+export type DeckMethod = "v1" | "v2";
+
+export type StrapCatalogItem = {
+  id: string;
+  method: DeckMethod;
+  sectionId: string;
+  sectionRank: number;
+  sectionTitle: string;
+  strapRank: number;
+  tier: string;
+  title: string;
+  url: string;
+  image: string;
+  sourceImage?: string;
+  color?: string;
+  colorName?: string;
+  colorHex?: string;
+  orderWidth?: string;
+  bestWatches?: string;
+  priceUsd?: number;
+  rating?: number;
+  reviewCount?: number;
+  inStock?: boolean;
+  category?: string;
+  valueScore?: number;
+  qualityScore?: number;
+  note?: string;
+  sourceNote?: string;
+  redditNote?: string;
+};

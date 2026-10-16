@@ -1,9 +1,17 @@
 (function () {
-  const method = "v1";
+  const method = document.documentElement.dataset.deckMethod || window.__deckMethod || "v1";
   const responseKey = `tuns-responses-${method}`;
 
   function isSignedIn() {
     return Boolean(window.__deckBridgeState?.isAuthenticated);
+  }
+
+  function hiddenStrapIds() {
+    return new Set(window.__deckBridgeState?.hiddenStrapIds || []);
+  }
+
+  function isHiddenStrap(strapId) {
+    return hiddenStrapIds().has(strapId);
   }
 
   const style = document.createElement("style");
@@ -11,12 +19,12 @@
     .response-panel,
     .lightbox-response-panel {
       margin-top: 14px;
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(49, 44, 38, 0.08);
-      background: rgba(255,255,255,0.72);
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(45, 62, 83, 0.12);
+      background: rgba(255,255,255,0.86);
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
 
     .response-header {
@@ -43,27 +51,28 @@
     }
 
     .response-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .response-chip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(49, 44, 38, 0.1);
+      min-height: 56px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(49, 44, 38, 0.12);
       background: rgba(255,255,255,0.92);
       color: #5f584f;
       font-family: "Avenir Next", "Segoe UI", sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.94rem;
+      font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
     }
 
     .response-chip:hover:not(:disabled) {
@@ -76,15 +85,17 @@
     }
 
     .response-chip.active-like {
-      background: rgba(62, 122, 85, 0.13);
-      border-color: rgba(62, 122, 85, 0.32);
-      color: #29553a;
+      background: #2f704f;
+      border-color: #2f704f;
+      box-shadow: 0 10px 22px rgba(47, 112, 79, 0.22);
+      color: white;
     }
 
     .response-chip.active-dislike {
-      background: rgba(151, 88, 88, 0.13);
-      border-color: rgba(151, 88, 88, 0.32);
-      color: #7b3838;
+      background: #8f4040;
+      border-color: #8f4040;
+      box-shadow: 0 10px 22px rgba(143, 64, 64, 0.20);
+      color: white;
     }
 
     .response-comment {
@@ -125,6 +136,22 @@
     .response-panel.response-dislike,
     .lightbox-response-panel.response-dislike {
       box-shadow: inset 0 0 0 1px rgba(151, 88, 88, 0.08);
+    }
+
+    @media (max-width: 640px) {
+      .response-panel,
+      .lightbox-response-panel {
+        padding: 14px;
+      }
+
+      .response-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .response-chip {
+        min-height: 60px;
+        font-size: 0.98rem;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -291,6 +318,11 @@
       const strapId = card.dataset.id;
       const strapTitle = card.querySelector(".strap-title")?.textContent?.trim() ?? strapId;
 
+      if (isHiddenStrap(strapId)) {
+        card.querySelector(".response-panel")?.remove();
+        return;
+      }
+
       if (!card.querySelector(".response-panel")) {
         const panel = buildPanel(strapId, strapTitle, false);
         const actionRow = card.querySelector(".strap-actions");
@@ -307,8 +339,13 @@
       return null;
     }
 
-    const matchingCard = [...document.querySelectorAll(".strap-card")].find((card) => card.dataset.id === link.href);
+    const strapId = link.dataset.strapId || link.href;
+    const matchingCard = [...document.querySelectorAll(".strap-card")].find((card) => card.dataset.id === strapId);
     if (!matchingCard) {
+      return null;
+    }
+
+    if (isHiddenStrap(matchingCard.dataset.id)) {
       return null;
     }
 
@@ -364,7 +401,11 @@
   }
 
   window.addEventListener("storage", syncAllPanels);
-  window.addEventListener("deck:bridge-state", syncAllPanels);
+  window.addEventListener("deck:bridge-state", () => {
+    ensureCardPanels();
+    ensureLightboxPanel();
+    syncAllPanels();
+  });
   window.addEventListener("load", () => {
     ensureCardPanels();
     ensureLightboxPanel();
